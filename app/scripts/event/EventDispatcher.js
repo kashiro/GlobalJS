@@ -6,6 +6,8 @@
  * manipulate publish / subscribe interface
  * @extends Global.core.BaseClass
  *
+ * @example
+ *
  * var instance = new Global.event.EventDispatcher(),
  *     callback = Global.core.Function.bind(console.log);
  *
