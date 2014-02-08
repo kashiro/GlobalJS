@@ -28,7 +28,8 @@
     "karma-expect": "~1.0.0",
     "karma-sinon": "~0.0.1",
     "karma-mocha": "*",
-    "grunt-jsduck": "~1.0.0"
+    "grunt-jsduck": "~1.0.0",
+    "jshint-stylish": "~0.1.5"
   },
   "engines": {
     "node": ">=0.8.0"
