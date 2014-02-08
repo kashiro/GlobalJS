@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+&#39;use strict&#39;;
+
+<span id='Global-core-BaseClass'>/**
+</span> * @class Global.core.BaseClass
+ * Base class of this library
+ * @alternateClassName Global.BaseClass
+ * @extends Class
+ */
+Global.define(&#39;Global.core.BaseClass&#39;,{
+
+    alias: &#39;Global.BaseClass&#39;,
+
+    extend: Class,
+
+<span id='Global-core-BaseClass-method-init'>    /**
+</span>     * @method init
+     * This method apply config to own properites.
+     * @constructor
+     */
+    init: function(config){
+        this.config = config;
+        this._applyConfig(config);
+    },
+
+<span id='Global-core-BaseClass-method-_applyConfig'>    /**
+</span>     * @method _applyConfig
+     * @private
+     */
+    _applyConfig: function(config){
+        // define instance properties
+        for(var key in config) {
+            this[key] = config[key];
+        }
+    }
+});
+</pre>
+</body>
+</html>

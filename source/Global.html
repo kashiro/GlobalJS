@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='Global'>/**
+</span> * @class  Global
+ * This class is base of this framework.
+ * It provide definition method and so on.
+ * @singleton
+ */
+(function (win) {
+
+    &#39;use strict&#39;;
+
+    var Global = {
+
+<span id='Global-method-define'>        /**
+</span>         * @method define
+         * define module in specific name space
+         * @param  {String} namespace name space of module
+         * @param  {Function} definition module definition
+         */
+        define: function (namespace, definition) {
+            var modified = this._modifyDefinition(definition),
+                module = this._getModule(modified),
+                klass  = this._generateClass(module, namespace),
+                alias = definition.alias;
+
+            Global.regist(namespace, klass);
+
+            if(definition.alias){
+                Global.regist(alias, this._getRegistedClass(namespace));
+            }
+        },
+
+<span id='Global-method-regist'>        /**
+</span>         * @method regist
+         * create name space and set passed object
+         * @param  {String} nameSpace namespace to set passed object
+         * @param  {Object} obj       object to set that namespace
+         */
+        regist: function (nameSpace, obj) {
+            var nameList = nameSpace.split(&#39;.&#39;),
+                l = nameList.length,
+                i = 0,
+                name,
+                currentObj = win;
+
+            for(; i &lt; l; i++) {
+                name = nameList[i];
+                if(typeof currentObj[name] === &#39;undefined&#39;) {
+                    if(i === nameList.length - 1) {
+                        currentObj[name] = obj;
+                    } else {
+                        currentObj[name] = {};
+                    }
+                }
+                currentObj = currentObj[name];
+            }
+        },
+
+<span id='Global-method-_getRegistedClass'>        /**
+</span>         * @method _getRegistedClass
+         * @private
+         */
+        _getRegistedClass: function(nameSpace) {
+            var nameList = nameSpace.split(&#39;.&#39;),
+                l = nameList.length,
+                i = 0,
+                name,
+                currentObj = win;
+
+            for(; i &lt; l; i++){
+                name = nameList[i];
+                currentObj = currentObj[name];
+            }
+            return currentObj;
+        },
+
+<span id='Global-method-_getModule'>        /**
+</span>         * @method _getModule
+         * @private
+         */
+        _getModule: function(definition){
+            var module, parent;
+            if(_.isUndefined(definition.extend)){
+                parent = Global.core.BaseClass;
+            }else if(_.isFunction(definition.extend)){
+                parent = definition.extend;
+            }else{
+                console.error(&#39;you should set sub class of lib/Class.js&#39;);
+                return;
+            }
+            module = parent.extend(definition);
+            module.$parentClass = parent;
+            return module;
+        },
+<span id='Global-method-_generateClass'>        /**
+</span>         * @method _generateClass
+         * @private
+         */
+        _generateClass: function(Module, namespace){
+            var klass;
+            if(Module.prototype.singleton){
+                klass = new Module();
+            }else{
+                klass = Module;
+            }
+            klass.$className = namespace;
+            return klass;
+        },
+<span id='Global-method-_modifyDefinition'>        /**
+</span>         * @method _modifyDefinition
+         * @private
+         */
+        _modifyDefinition: function(definition) {
+            var modified;
+            modified = this._addGetSetter(definition);
+            return modified;
+        },
+<span id='Global-method-_addGetSetter'>        /**
+</span>         * @method _addGetSetter
+         * @private
+         */
+        _addGetSetter: function(definition) {
+            var tmpProp,
+                newPropName,
+                key;
+            for(key in definition){
+                tmpProp = definition[key];
+                if(!_.isFunction(tmpProp) &amp;&amp; definition.hasOwnProperty(key)){
+                    newPropName = this._conbineUpperStr(&#39;get&#39;, key);
+                    definition[newPropName] = this._getGetSetFunc(&#39;get&#39;, definition, key);
+                    newPropName = this._conbineUpperStr(&#39;set&#39;, key);
+                    definition[newPropName] = this._getGetSetFunc(&#39;set&#39;, definition, key);
+                }
+            }
+            return definition;
+        },
+<span id='Global-method-_conbineUpperStr'>        /**
+</span>         * @method _conbineUpperStr
+         * @private
+         */
+        _conbineUpperStr: function(prefix, name){
+            var firstUpper = name.charAt(0).toUpperCase(),
+                theOthers = name.slice(1);
+            return prefix + firstUpper + theOthers;
+        },
+<span id='Global-method-_getGetSetFunc'>        /**
+</span>         * @method _getGetSetFunc
+         * @private
+         */
+        _getGetSetFunc: function(type, definition, propName){
+            var func;
+            if(type === &#39;get&#39;){
+                func = function(){
+                    // return definition[propName];
+                    return this[propName];
+                };
+            }else{
+                func = function(value) {
+                    // definition[propName] = value;
+                    this[propName] = value;
+                };
+            }
+            return func;
+        }
+
+    };
+
+    /*--------------------------------
+    * private
+    --------------------------------*/
+    Global.regist(&#39;Global&#39;, Global);
+
+}(window));
+</pre>
+</body>
+</html>

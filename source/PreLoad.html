@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+&#39;use strict&#39;;
+
+<span id='Global-util-PreLoad'>/**
+</span> * @class Global.util.PreLoad
+ * This class preload images
+ * @extends Global.core.ObservableClass
+ * @example
+ *
+ *     var imgs = [
+ *           &#39;hoge.png&#39;,
+ *           &#39;fuga.png&#39;,
+ *           &#39;piyo.png&#39;
+ *         ],
+ *         instance = new Global.util.PreLoad({src: imgs});
+ *
+ *     // listen load progress.
+ *     instance.addEventListener(&#39;load&#39;, function(e){
+ *         console.log(e.data.current); // current image element
+ *         console.log(e.data.percentage); // progress of loading (percentage)
+ *     });
+ *
+ *     // listen load end.
+ *     instance.addEventListener(&#39;loadend&#39;, function(e){
+ *        console.log(&#39;load end&#39;);
+ *     });
+ *
+ *     instance.load();
+ *
+ */
+Global.define(&#39;Global.util.PreLoad&#39;,{
+
+    extend: Global.core.ObservableClass,
+
+    srcs: [],
+
+    imgs : [],
+
+    eventName: {
+<span id='Global-util-PreLoad-event-load'>        /**
+</span>         * @event
+         * Fired when the image loaded on.
+         * @param {Global.util.PreLoad} target this class.
+         * @param {String} eventName this event name.
+         * @param {Object} data data of this event.
+         * @param {Element} data.current Img element which is loaded.
+         * @param {Number} data.percentage progress of loading (percentage)
+         */
+        load   : &#39;load&#39;,
+<span id='Global-util-PreLoad-event-loadEnd'>        /**
+</span>         * @event
+         * @param {Global.util.PreLoad} target this class.
+         * @param {String} eventName this event name.
+         * @param {Object} data data of this event.
+         * @param {Element} data.current Img element which is loaded.
+         * @param {Number} data.percentage progress of loading (percentage)
+         */
+        loadEnd: &#39;loadend&#39;
+    },
+
+<span id='Global-util-PreLoad-method-init'>    /**
+</span>     * @method init
+     * @constructor
+     */
+    init: function(config) {
+        this._super(config);
+    },
+
+<span id='Global-util-PreLoad-method-load'>    /**
+</span>     * @method load
+     * Preload images
+     * @param {Object} config
+     * @param {String[]} srcs image path list
+     */
+    load: function(){
+        var srcs = this.getSrcs(),
+            orgImg = document.createElement(&#39;img&#39;),
+            list = [];
+
+        Global.core.Array.each(srcs, function(index, src){
+            list.push({
+                img : orgImg.cloneNode(),
+                src : src
+            });
+        });
+        this._prepareImages(list);
+    },
+
+<span id='Global-util-PreLoad-method-_prepareImages'>    /**
+</span>     * @private
+     */
+    _prepareImages: function(imgs) {
+        var me = this;
+        Global.core.Array.each(imgs, function(index, obj){
+            obj.img.onload = Global.core.Function.bind(me._onLoad, me);
+            obj.img.src = obj.src;
+
+            // for cached
+            if(obj.img.complete){
+                me._onLoad({currentTarget: obj.img});
+            }
+        });
+    },
+<span id='Global-util-PreLoad-method-_onLoad'>    /**
+</span>     * @private
+     */
+    _onLoad: function(e){
+        var srcs = this.getSrcs(),
+            current = e.currentTarget,
+            imgs = this.getImgs(),
+            percentage, eData;
+
+        imgs.push(current);
+        percentage = this._getPercentage(srcs.length, imgs.length);
+
+        eData = this._getEventData(current, percentage);
+        this._doDispatchEvent(eData);
+    },
+<span id='Global-util-PreLoad-method-_doDispatchEvent'>    /**
+</span>     * @private
+     */
+    _doDispatchEvent: function(data){
+        var eventName = this.getEventName();
+        this.dispatchEvent(eventName.load, data);
+        if(data.percentage === 100){
+            this.dispatchEvent(eventName.loadEnd, data);
+        }
+    },
+<span id='Global-util-PreLoad-method-_getPercentage'>    /**
+</span>     * @private
+     */
+    _getPercentage: function(maxLenght, currentLength){
+        return (currentLength / maxLenght) * 100;
+    },
+<span id='Global-util-PreLoad-method-_getEventData'>    /**
+</span>     * @private
+     */
+    _getEventData: function(current, percentage){
+        return {
+            current: current,
+            percentage: percentage
+        };
+    }
+
+});
+</pre>
+</body>
+</html>

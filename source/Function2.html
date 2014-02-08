@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+&#39;use strict&#39;;
+<span id='Global-core-Function'>/**
+</span> * @class Global.core.Function
+ * Wrapper class for Array
+ * @extends Global.core.BaseClass
+ * @alternateClassName Global.Function
+ * @singleton
+ */
+Global.define(&#39;Global.core.Function&#39;,{
+
+    alias: &#39;Global.Function&#39;,
+
+    singleton: true,
+
+<span id='Global-core-Function-method-createDebouce'>    /**
+</span>     * @method createDebouce
+     * make debounce instance
+     * @return {Global.util.function.Debounce} debounce instance
+     *
+     *     // this function is called 1 times 5 seconds.
+     *     var config = {
+     *             callback: function(value){console.log(value);},
+     *             interval: 1000 * 5
+     *         },
+     *         debounce = Global.core.Function.createDebounce(config);
+     *
+     *     window.addEventListener(&#39;resize&#39;, debounce.execute);
+     *
+     */
+    createDebounce: function(config){
+        var instance = new Global.util.function.Debounce(config);
+        return function() {
+            var ags = Global.core.Array.args2Array(arguments);
+            instance.execute.apply(instance, ags);
+        };
+    },
+
+<span id='Global-core-Function-method-bind'>    /**
+</span>     * @method  bind
+     * bind context
+     * @param  {Function} callback function to be fired
+     * @param  {Object}   context  context of callback
+     * @param  {Array}    args     parameter to be passed to callback
+     * @return {Function}          function contain callback
+     *
+     *     var callback = Global.core.Function.bind(console.log);
+     *     window.addEventListener(&#39;resize&#39;, callback);
+     *
+     */
+    bind: function(callback, context, args){
+        var ary;
+        return function(){
+            ary = Global.core.Array.args2Array(arguments);
+            if(Global.core.Array.isArray(args)){
+                ary = ary.concat(args);
+            }
+            callback.apply(context, ary);
+        };
+    }
+
+});
+</pre>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+&#39;use strict&#39;;
+
+<span id='Global-event-Event'>/**
+</span> * @class Global.event.Event
+ * event object
+ * @extends Global.core.BaseClass
+ */
+Global.define(&#39;Global.event.Event&#39;,{
+
+<span id='Global-event-Event-method-init'>    /**
+</span>     * @method init
+     * @constructor
+     */
+    init: function(config) {
+        this._super(config);
+        this.target = config.target;
+        this.type = config.type;
+        this.data = config.data;
+    }
+});
+</pre>
+</body>
+</html>

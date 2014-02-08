@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+&#39;use strict&#39;;
+<span id='Global-util-function-Debounce'>/**
+</span> * @class Global.util.function.Debounce
+ * debounce instance it is usefull to reduce function call.
+ * @extends Global.core.BaseClass
+ * @example
+ *
+ *     var config = {
+ *             callback: console.log,
+ *             scope   : console,
+ *             interval: 1000
+ *         },
+ *         instance = Global.util.function.Debounce(config);
+ *
+ *     window.addEventListener(&#39;resize&#39;, instance.execute);
+ */
+Global.define(&#39;Global.util.function.Debounce&#39;,{
+
+<span id='Global-util-function-Debounce-method-init'>    /**
+</span>     * @method init
+     * @constructor
+     * @param {Object} config config of this class.
+     * @param {Function} config.callback callback.
+     * @param {Object} config.scope scope of callback
+     * @param {Number} config.interval interval time. (ms) default is 1000ms.
+     * @param {Boolean} config.immediate wheter callback is execute immediate or not.
+     */
+    init: function(config) {
+        this.timer = null;
+        this._super(config);
+    },
+
+<span id='Global-util-function-Debounce-method-execute'>    /**
+</span>     * @method execute
+     * Execute function you passed.
+     */
+    execute: function() {
+        var config = {
+            callback: this.callback,
+            args    : Global.core.Array.args2Array(arguments),
+            scope   : this.scope || this,
+            interval: this.interval || 1000,
+            immediate: this.immediate
+        };
+
+        if (this.timer) {
+            return false;
+        }
+        this._switchExecute(config);
+    },
+<span id='Global-util-function-Debounce-method-_switchExecute'>    /**
+</span>     * @method _switchExecute
+     * @private
+     */
+    _switchExecute: function(config) {
+        if (config.immediate) {
+            this._executeBefore(config.callback, config.args, config.scope, config.interval);
+        } else {
+            this._executeAfter(config.callback, config.args, config.scope, config.interval);
+        }
+    },
+<span id='Global-util-function-Debounce-method-_executeBefore'>    /**
+</span>     * @method _executeBefore
+     * @private
+     */
+    _executeBefore: function(callback, args, scope, interval) {
+        var me = this;
+        callback.apply(scope, args);
+        me.timer = setTimeout(function() {
+            me.timer = null;
+        }, interval);
+    },
+<span id='Global-util-function-Debounce-method-_executeAfter'>    /**
+</span>     * @method _executeAfter
+     * @private
+     */
+    _executeAfter: function(callback, args, scope, interval) {
+        var me = this;
+        me.timer = setTimeout(function() {
+            callback.apply(scope, args);
+            me.timer = null;
+        }, interval);
+    },
+
+});
+</pre>
+</body>
+</html>
