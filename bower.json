@@ -1,0 +1,9 @@
+{
+  "name": "pc",
+  "private": true,
+  "dependencies": {
+    "jquery": "~1.10.2",
+    "underscore": "*"
+  },
+  "devDependencies": {}
+}

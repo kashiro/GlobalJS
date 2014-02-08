@@ -1,0 +1,21 @@
+[
+    "app/bower_components/jquery/jquery.min.js",
+    "app/bower_components/underscore/underscore-min.js",
+    "app/scripts/lib/Class.js",
+
+    "app/scripts/core/Global.js",
+    "app/scripts/core/BaseClass.js",
+
+    "app/scripts/event/Event.js",
+    "app/scripts/event/EventDispatcher.js",
+
+    "app/scripts/core/ObservableClass.js",
+    "app/scripts/core/Array.js",
+    "app/scripts/core/Function.js",
+
+    "app/scripts/data/Map.js",
+
+    "app/scripts/util/function/Debounce.js",
+    "app/scripts/util/PreLoad.js"
+
+]
