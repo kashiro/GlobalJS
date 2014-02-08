@@ -3,6 +3,5 @@ dist
 .tmp
 .sass-cache
 *.TODO
-app/bower_components
 test/bower_components
 docs
