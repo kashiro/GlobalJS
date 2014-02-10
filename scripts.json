@@ -15,6 +15,8 @@
 
     "app/scripts/data/Map.js",
 
+    "app/scripts/math/Random.js",
+
     "app/scripts/util/function/Debounce.js",
     "app/scripts/util/PreLoad.js"
 

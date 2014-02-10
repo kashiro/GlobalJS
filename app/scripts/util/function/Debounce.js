@@ -4,7 +4,7 @@
  * @class Global.util.function.Debounce
  * debounce instance it is usefull to reduce function call.
  * @extends Global.core.BaseClass
- * @example
+ *
  *
  *     var config = {
  *             callback: console.log,

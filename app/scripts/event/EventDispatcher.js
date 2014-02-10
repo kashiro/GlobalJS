@@ -6,14 +6,11 @@
  * manipulate publish / subscribe interface
  * @extends Global.core.BaseClass
  *
- * @example
+ *     var instance = new Global.event.EventDispatcher(),
+ *         callback = Global.core.Function.bind(console.log);
  *
- * var instance = new Global.event.EventDispatcher(),
- *     callback = Global.core.Function.bind(console.log);
- *
- * instance.addEventListener('hoge', callback);
- *
- * instance.dispatchEvent('hoge'); // log argumetns
+ *     instance.addEventListener('hoge', callback);
+ *     instance.dispatchEvent('hoge'); // log argumetns
  *
  */
 Global.define('Global.event.EventDispatcher',{
