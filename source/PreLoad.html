@@ -22,7 +22,7 @@
 </span> * @class Global.util.PreLoad
  * This class preload images
  * @extends Global.core.ObservableClass
- * @example
+ *
  *
  *     var imgs = [
  *           &#39;hoge.png&#39;,
@@ -60,7 +60,7 @@ Global.define(&#39;Global.util.PreLoad&#39;,{
          * @param {Global.util.PreLoad} target this class.
          * @param {String} eventName this event name.
          * @param {Object} data data of this event.
-         * @param {Element} data.current Img element which is loaded.
+         * @param {Object} data.current Img element which is loaded.
          * @param {Number} data.percentage progress of loading (percentage)
          */
         load   : &#39;load&#39;,
@@ -69,7 +69,7 @@ Global.define(&#39;Global.util.PreLoad&#39;,{
          * @param {Global.util.PreLoad} target this class.
          * @param {String} eventName this event name.
          * @param {Object} data data of this event.
-         * @param {Element} data.current Img element which is loaded.
+         * @param {Object} data.current Img element which is loaded.
          * @param {Number} data.percentage progress of loading (percentage)
          */
         loadEnd: &#39;loadend&#39;
