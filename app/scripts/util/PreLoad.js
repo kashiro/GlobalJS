@@ -12,7 +12,7 @@
  *           'fuga.png',
  *           'piyo.png'
  *         ],
- *         instance = new Global.util.PreLoad({src: imgs});
+ *         instance = new Global.util.PreLoad({srcs: imgs});
  *
  *     // listen load progress.
  *     instance.addEventListener('load', function(e){
