@@ -7,7 +7,7 @@
  * @extends Global.core.BaseClass
  *
  *     var instance = new Global.event.EventDispatcher(),
- *         callback = Global.core.Function.bind(console.log);
+ *         callback = Global.core.Functions.bind(console.log);
  *
  *     instance.addEventListener('hoge', callback);
  *     instance.dispatchEvent('hoge'); // log argumetns

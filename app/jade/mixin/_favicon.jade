@@ -1,0 +1,5 @@
+// @param {Object} data
+// @param {String} data.url
+mixin favicon(data)
+    link(rel='shortcut icon', type='image/vnd.microsoft.icon', href='#{data.url}')
+    link(rel='icon', type='image/x-icon', href='#{data.url}')

@@ -1,20 +1,20 @@
 
 'use strict';
 
-describe('#Test for core/Function.js', function () {
+describe('#Test for core/Functions.js', function () {
 
-    var Func = Global.core.Function;
+    var Func = Global.core.Functions;
 
-    it('core/Function has public methods', function () {
+    it('core/Functions has public methods', function () {
         expect(Func.createDebounce).to.be.a('function');
     });
 
-    it('core/Function is registed alias name space', function () {
-        expect(Global.Function).to.eql(Func);
+    it('core/Functions is registed alias name space', function () {
+        expect(Global.Functions).to.eql(Func);
     });
 
     describe('#createDebounce', function () {
-        it('return instance of Global.util.function.Debounce.', function () {
+        it('return instance of Global.util.functions.Debounce.', function () {
             var config = {
                     callback: sinon.spy(),
                     immediate: true

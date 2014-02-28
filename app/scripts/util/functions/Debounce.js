@@ -1,8 +1,8 @@
 
 'use strict';
 /**
- * @class Global.util.function.Debounce
- * debounce instance it is usefull to reduce function call.
+ * @class Global.util.functions.Debounce
+ * debounce instance it is usefull to reduce functions call.
  * @extends Global.core.BaseClass
  *
  *
@@ -11,11 +11,11 @@
  *             scope   : console,
  *             interval: 1000
  *         },
- *         instance = Global.util.function.Debounce(config);
+ *         instance = Global.util.functions.Debounce(config);
  *
  *     window.addEventListener('resize', instance.execute);
  */
-Global.define('Global.util.function.Debounce',{
+Global.define('Global.util.functions.Debounce',{
 
     /**
      * @method init

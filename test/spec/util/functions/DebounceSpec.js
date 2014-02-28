@@ -1,9 +1,9 @@
 
 'use strict';
 
-describe('Test for util/function/Debounce.js', function () {
+describe('Test for util/functions/Debounce.js', function () {
 
-    var Debounce = Global.util.function.Debounce,
+    var Debounce = Global.util.functions.Debounce,
         clock,
         instance,
         spy,
@@ -12,7 +12,7 @@ describe('Test for util/function/Debounce.js', function () {
         interval;
 
 
-    it('core/function/Debounce has public methods', function () {
+    it('core/functions/Debounce has public methods', function () {
         expect(Debounce.prototype.execute).to.be.a('function');
     });
 

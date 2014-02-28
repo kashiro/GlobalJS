@@ -1,0 +1,19 @@
+// @param {Object} data
+// @param {String} data.title title
+// @param {String} data.type type
+// @param {String} data.url
+// @param {String} data.image
+// @param {String} data.siteName
+// @param {String} data.desc
+mixin ogp(data)
+    - var locale = '';
+    if (!data.locale)
+        - locale = 'ja_JP'
+
+    meta(property='og:locale', content='#{locale}')
+    meta(property='og:title', content='#{data.title}')
+    meta(property='og:type', content='#{data.type}')
+    meta(property='og:url', content='#{data.url}')
+    meta(property='og:image', content='#{data.image}')
+    meta(property='og:site_name', content='#{data.siteName}')
+    meta(property='og:description', content='#{data.desc}')

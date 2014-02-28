@@ -1,0 +1,33 @@
+include /mixin/_scripts
+include /mixin/_favicon
+include /mixin/meta/_ogp
+include /mixin/meta/_viewport
+include /mixin/meta/_basicInfo
+include /mixin/_googleAnalytics
+extends /extends/_application.jade
+
+block title
+    title=
+block viewport
+    +viewport('dw')
+block meta
+    +basicInfo({})
+    +ogp({})
+    +favicon({url: 'favicon.ico'})
+
+block css
+    link(rel='stylesheet', href='styles/main.css')
+
+
+block body
+
+    .content
+        .viewport
+
+    include /include/_googlesdk
+    +ga({id: '', domain: ''})
+
+block vendorScripts
+    +scripts(scripts.vendor)
+block appScripts
+    +scripts(scripts.app)

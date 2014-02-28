@@ -1,0 +1,16 @@
+
+/*------------------------------------*\
+    font
+\*------------------------------------*/
+@mixin fontSize($font-size){
+    font-size: $font-size + px;
+    font-size: fz($font-size) + rem;
+}
+@mixin linkColor($color){
+    &:link, &:visited, &:hover, &:focus, &:active {
+        color: $color;
+    }
+}
+@function fz($size, $base:$base-font-size) {
+    @return $size/$base;
+}

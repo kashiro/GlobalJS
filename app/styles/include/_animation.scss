@@ -1,0 +1,19 @@
+
+.animation-flying{
+    position: relative;
+    animation-duration: 4s;
+    animation-name: flying;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    //animation-delay:
+}
+
+@keyframes flying{
+    0% {
+        top: 0;
+    }
+    100% {
+        top: -15px
+    }
+}

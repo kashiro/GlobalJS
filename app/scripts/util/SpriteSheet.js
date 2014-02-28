@@ -28,13 +28,13 @@ Global.define('Global.util.SpriteSheet',{
         var me = this,
             g = Global,
             config = {
-                callback: g.Function.bind(function(id, count){
+                callback: g.Functions.bind(function(id, count){
                     me.doSprite(count);
                     me.execute();
                 }, me, [me.count]),
                 interval: me.interval
             },
-            callback = g.Function.createDebounce(config);
+            callback = g.Functions.createDebounce(config);
         me.intervalId = g.util.RequestAnimationFrame.start(callback);
     },
 

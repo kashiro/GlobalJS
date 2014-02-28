@@ -92,7 +92,7 @@ Global.define('Global.util.PreLoad',{
     _prepareImages: function(imgs) {
         var me = this;
         Global.core.Array.each(imgs, function(index, obj){
-            obj.img.onload = Global.core.Function.bind(me._onLoad, me);
+            obj.img.onload = Global.core.Functions.bind(me._onLoad, me);
             obj.img.src = obj.src;
 
             // for cached
@@ -106,9 +106,15 @@ Global.define('Global.util.PreLoad',{
      */
     _onLoad: function(e){
         var srcs = this.getSrcs(),
-            current = e.currentTarget,
             imgs = this.getImgs(),
-            percentage, eData;
+            percentage, eData, current;
+
+        if(e){
+            current = e.currentTarget;
+        }else{
+            // for ie8
+            current = window.event.srcElement;
+        }
 
         imgs.push(current);
         percentage = this._getPercentage(srcs.length, imgs.length);

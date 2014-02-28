@@ -1,0 +1,7 @@
+// @param {String} data
+// @param {String} data.desc description
+// @param {String} data.keywords keywords
+mixin basicInfo(data)
+    meta(property='description', content='#{data.desc}')
+    meta(property='keywords', content='#{data.keywords}')
+

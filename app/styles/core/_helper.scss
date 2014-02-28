@@ -1,0 +1,15 @@
+
+%cf{
+    zoom:1;
+    &:after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+}
+
+%clearLinkLine{
+    &:link, &:visited, &:hover, &:focus, &:active {
+        text-decoration: none;
+    }
+}

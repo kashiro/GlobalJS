@@ -1,35 +1,35 @@
 
 'use strict';
 /**
- * @class Global.core.Function
+ * @class Global.core.Functions
  * Wrapper class for Array
  * @extends Global.core.BaseClass
- * @alternateClassName Global.Function
+ * @alternateClassName Global.Functions
  * @singleton
  */
-Global.define('Global.core.Function',{
+Global.define('Global.core.Functions',{
 
-    alias: 'Global.Function',
+    alias: 'Global.Functions',
 
     singleton: true,
 
     /**
      * @method createDebouce
      * make debounce instance
-     * @return {Global.util.function.Debounce} debounce instance
+     * @return {Global.util.functions.Debounce} debounce instance
      *
-     *     // this function is called 1 times 5 seconds.
+     *     // this functions is called 1 times 5 seconds.
      *     var config = {
      *             callback: function(value){console.log(value);},
      *             interval: 1000 * 5
      *         },
-     *         debounce = Global.core.Function.createDebounce(config);
+     *         debounce = Global.core.Functions.createDebounce(config);
      *
      *     window.addEventListener('resize', debounce.execute);
      *
      */
     createDebounce: function(config){
-        var instance = new Global.util.function.Debounce(config);
+        var instance = new Global.util.functions.Debounce(config);
         return function() {
             var ags = Global.core.Array.args2Array(arguments);
             instance.execute.apply(instance, ags);
@@ -44,7 +44,7 @@ Global.define('Global.core.Function',{
      * @param  {Array}    args     parameter to be passed to callback
      * @return {Function}          function contain callback
      *
-     *     var callback = Global.core.Function.bind(console.log);
+     *     var callback = Global.core.Functions.bind(console.log);
      *     window.addEventListener('resize', callback);
      *
      */
