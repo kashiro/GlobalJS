@@ -125,7 +125,17 @@ module.exports = function (grunt) {
                     browsers: ['PhantomJS'],
                     files: testFiles
                 }
+            },
+            travis: {
+                options: {
+                    frameworks: ['mocha', 'expect', 'sinon'],
+                    runnerPort: 8080,
+                    singleRun: true,
+                    browsers: ['PhantomJS','Firefox'],
+                    files: testFiles
+                }
             }
+
         },
 
         jsduck: {
@@ -169,6 +179,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('test', ['newer:jshint', 'karma']);
+    grunt.registerTask('travis', ['jshint', 'karma:travis']);
 
     grunt.registerTask('build', [
         'clean:docs',
