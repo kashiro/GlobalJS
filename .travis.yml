@@ -1,5 +1,5 @@
 script:
-  - "grunt test"
+  - "grunt travis"
 
 language: node_js
 
