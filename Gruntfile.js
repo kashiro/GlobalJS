@@ -16,7 +16,8 @@ module.exports = function (grunt) {
     require('time-grunt')(grunt);
 
     // load scripts files
-    var scripts = grunt.file.readJSON('scripts.json'),
+    var scriptsSettings = grunt.file.readJSON('scripts.json'),
+        scripts = scriptsSettings.vendor.concat(scriptsSettings.app),
         testFiles = [];
 
     testFiles = testFiles.concat(scripts);
@@ -31,7 +32,8 @@ module.exports = function (grunt) {
         yeoman: {
             // Configurable paths
             app : 'app',
-            docs: 'docs'
+            docs: 'docs',
+            dist: 'dist'
         },
 
         // Watches files for changes and runs tasks based on the changed files
@@ -99,6 +101,15 @@ module.exports = function (grunt) {
                         '!<%= yeoman.docs %>/.git*'
                     ]
                 }]
+            },
+            dist: {
+                files: [{
+                    dot: true,
+                    src: [
+                        '<%= yeoman.dist %>/*',
+                        '!<%= yeoman.dist %>/.git*',
+                    ]
+                }]
             }
         },
 
@@ -156,8 +167,22 @@ module.exports = function (grunt) {
                     'external': ['XMLHttpRequest']
                 }
             }
-        }
+        },
 
+        concat: {
+            dist: {
+                src: scriptsSettings.app,
+                dest: 'dist/global-concat.js'
+            }
+        },
+
+        uglify: {
+            dist: {
+                files: {
+                    'dist/global.min.js': 'dist/global-concat.js'
+                }
+            }
+        }
     });
 
 
@@ -178,21 +203,13 @@ module.exports = function (grunt) {
         grunt.task.run(['serve']);
     });
 
-    grunt.registerTask('test', ['newer:jshint', 'karma']);
+    grunt.registerTask('test', ['newer:jshint', 'karma:unit']);
     grunt.registerTask('travis', ['jshint', 'karma:travis']);
 
     grunt.registerTask('build', [
-        'clean:docs',
-        'useminPrepare',
-        'concurrent:dist',
-        'autoprefixer',
-        'concat',
-        'cssmin',
-        'uglify',
-        'copy:dist',
-        //'rev',
-        'usemin',
-        'htmlmin'
+        'clean:dist',
+        'concat:dist',
+        'uglify:dist'
     ]);
 
     grunt.registerTask('docs', [

@@ -1,26 +1,30 @@
-[
-    "app/bower_components/jquery/jquery.min.js",
-    "app/bower_components/underscore/underscore-min.js",
-    "app/scripts/lib/Class.js",
+{
+    "vendor": [
+        "app/bower_components/jquery/jquery.min.js",
+        "app/bower_components/underscore/underscore-min.js"
+    ],
+    "app": [
+        "app/scripts/lib/Class.js",
 
-    "app/scripts/core/Global.js",
-    "app/scripts/core/BaseClass.js",
+        "app/scripts/core/Global.js",
+        "app/scripts/core/BaseClass.js",
 
-    "app/scripts/event/Event.js",
-    "app/scripts/event/EventDispatcher.js",
+        "app/scripts/event/Event.js",
+        "app/scripts/event/EventDispatcher.js",
 
-    "app/scripts/core/ObservableClass.js",
-    "app/scripts/core/Array.js",
-    "app/scripts/core/Functions.js",
+        "app/scripts/core/ObservableClass.js",
+        "app/scripts/core/Array.js",
+        "app/scripts/core/Functions.js",
 
-    "app/scripts/data/Map.js",
+        "app/scripts/data/Map.js",
 
-    "app/scripts/math/Random.js",
+        "app/scripts/math/Random.js",
 
-    "app/scripts/util/functions/Debounce.js",
-    "app/scripts/util/PreLoad.js",
-    "app/scripts/util/SpriteSheet.js",
-    "app/scripts/util/RequestAnimationFrame.js",
+        "app/scripts/util/functions/Debounce.js",
+        "app/scripts/util/PreLoad.js",
+        "app/scripts/util/SpriteSheet.js",
+        "app/scripts/util/RequestAnimationFrame.js",
 
-    "app/scripts/app/Controller.js"
-]
+        "app/scripts/app/Controller.js"
+    ]
+}
