@@ -1,7 +1,6 @@
 {
     "vendor": [
-        "app/bower_components/jquery/jquery.min.js",
-        "app/bower_components/underscore/underscore-min.js"
+        "app/bower_components/jquery/jquery.min.js"
     ],
     "app": [
         "app/scripts/lib/Class.js",

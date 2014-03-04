@@ -73,12 +73,12 @@
                 if(!$ref){
                     return false;
                 }
-                eName = _.keys(val)[0];
+                eName = Global.keys(val)[0];
                 param = val[eName];
 
-                if(_.isObject(param) && param.delegate){
+                if(Global.isObject(param) && param.delegate){
                     $ref.on(eName, param.delegate, $.proxy(me[param.handler], me));
-                }else if(_.isString(param)){
+                }else if(Global.isString(param)){
                     $ref.on(eName, $.proxy(me[param], me));
                 }
 

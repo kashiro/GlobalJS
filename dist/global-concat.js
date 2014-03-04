@@ -107,6 +107,76 @@
         },
 
         /**
+         * @method keys
+         * get object keys
+         * @param {Object} obj targe object
+         * @return {String[]} array of object keys
+         */
+        keys: function(obj){
+            var isObject = Global.isObject(obj),
+                hasObjectKeys = Object.keys,
+                res = [],
+                key;
+            if(!isObject){
+                res = [];
+            }
+            if(hasObjectKeys){
+                res = Object.keys(obj);
+            }
+            for(key in obj){
+                if(obj.hasOwnProperty(key)){
+                    res.push(key);
+                }
+            }
+            return res;
+
+        },
+        /**
+         * @method isObject
+         * @param {Object} obj target object
+         * @return {Boolean} whether target is Object or not
+         */
+        isObject: function(obj){
+            return obj === Object(obj);
+        },
+        /**
+         * @method isUndefined
+         * @param {Object} obj target object
+         * @return {Boolean} whether target is undefined or not
+         */
+        isUndefined: function(obj){
+            return obj === void 0;
+        },
+        /**
+         * @method isFunction
+         * @param {Object} obj target object
+         * @return {Boolean} whether target is Function or not
+         */
+        /**
+         * @method isString
+         * @param {Object} obj target object
+         * @return {Boolean} whether target is String or not
+         */
+        /**
+         * @method isNumber
+         * @param {Object} obj target object
+         * @return {Boolean} whether target is Number or not
+         */
+        /**
+         * @method isDate
+         * @param {Object} obj target object
+         * @return {Boolean} whether target is Date or not
+         */
+        _makeWhetherFun: function(){
+            var me = this,
+                list = ['Function', 'String', 'Number', 'Date'];
+            $.each(list, function(index, name){
+                me['is' + name] = function(obj){
+                    return Object.prototype.toString.call(obj) === '[object ' + name + ']';
+                };
+            });
+        },
+        /**
          * @method _getRegistedClass
          * @private
          */
@@ -130,9 +200,9 @@
          */
         _getModule: function(definition){
             var module, parent;
-            if(_.isUndefined(definition.extend)){
+            if(this.isUndefined(definition.extend)){
                 parent = Global.core.BaseClass;
-            }else if(_.isFunction(definition.extend)){
+            }else if(this.isFunction(definition.extend)){
                 parent = definition.extend;
             }else{
                 console.error('you should set sub class of lib/Class.js');
@@ -175,7 +245,7 @@
                 key;
             for(key in definition){
                 tmpProp = definition[key];
-                if(!_.isFunction(tmpProp) && definition.hasOwnProperty(key)){
+                if(!this.isFunction(tmpProp) && definition.hasOwnProperty(key)){
                     newPropName = this._conbineUpperStr('get', key);
                     definition[newPropName] = this._getGetSetFunc('get', definition, key);
                     newPropName = this._conbineUpperStr('set', key);
@@ -212,14 +282,14 @@
             }
             return func;
         }
-
     };
 
     /*--------------------------------
     * private
     --------------------------------*/
     Global.regist('Global', Global);
-
+    Global._makeWhetherFun();
+    console.log(Global.isString('11111'));
 }(window));
 
 (function(){
@@ -911,24 +981,18 @@
 
         intervalId: null,
 
-        /**
-         * @constructor
-         */
         init: function(config){
             this.$elm = $(config.targetSelector);
             this._super(config);
         },
 
-        /**
-         * execute spritesheet interval
-         */
         execute: function(){
             var me = this,
                 g = Global,
                 config = {
                     callback: g.Functions.bind(function(id, count){
-                        me._doSprite(count);
-                        me._execute();
+                        me.doSprite(count);
+                        me.execute();
                     }, me, [me.count]),
                     interval: me.interval
                 },
@@ -936,15 +1000,15 @@
             me.intervalId = g.util.RequestAnimationFrame.start(callback);
         },
 
-        _doSprite: function(count){
+        doSprite: function(count){
             var me = this,
-                cls = me._getClass(me.classList, count);
+                cls = me.getClass(count);
             me.$elm.removeClass(cls.current);
             me.$elm.addClass(cls.next);
             me.countUp(count);
         },
 
-        _countUp: function(count){
+        countUp: function(count){
             if(count === this.classList.length - 1){
                 count = 0;
             }else{
@@ -953,10 +1017,11 @@
             this.count = count;
         },
 
-        _getClass: function(classList, count){
+        getClass: function(count){
+            var me = this;
             return {
-                current: classList[count],
-                next   : classList[count + 1]
+                current: me.classList[count],
+                next   : me.classList[count + 1]
             };
         }
     });
@@ -1086,12 +1151,12 @@
                 if(!$ref){
                     return false;
                 }
-                eName = _.keys(val)[0];
+                eName = Global.keys(val)[0];
                 param = val[eName];
 
-                if(_.isObject(param) && param.delegate){
+                if(Global.isObject(param) && param.delegate){
                     $ref.on(eName, param.delegate, $.proxy(me[param.handler], me));
-                }else if(_.isString(param)){
+                }else if(Global.isString(param)){
                     $ref.on(eName, $.proxy(me[param], me));
                 }
 

@@ -2,8 +2,7 @@
   "name": "GlobalJS",
   "private": true,
   "dependencies": {
-    "jquery": "~1.10.2",
-    "underscore": "*"
+    "jquery": "~1.10.2"
   },
   "devDependencies": {}
 }
