@@ -94,7 +94,9 @@
         _prepareImages: function(imgs) {
             var me = this;
             Global.core.Array.each(imgs, function(index, obj){
-                obj.img.onload = Global.core.Functions.bind(me._onLoad, me);
+                obj.img.onload = function(e){
+                    me._onLoad(e, this);
+                };
                 obj.img.src = obj.src;
 
                 // for cached
@@ -106,7 +108,7 @@
         /**
          * @private
          */
-        _onLoad: function(e){
+        _onLoad: function(e, context){
             var srcs = this.getSrcs(),
                 imgs = this.getImgs(),
                 percentage, eData, current;
@@ -115,7 +117,7 @@
                 current = e.currentTarget;
             }else{
                 // for ie8
-                current = window.event.srcElement;
+                current = context;
             }
 
             imgs.push(current);
