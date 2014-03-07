@@ -101,7 +101,7 @@
 
                 // for cached
                 if(obj.img.complete){
-                    me._onLoad({currentTarget: obj.img});
+                    me._onLoad({currentTarget: obj.img}, this);
                 }
             });
         },
