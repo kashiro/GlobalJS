@@ -872,6 +872,8 @@
          * @constructor
          */
         init: function(config) {
+            this.srcs = [];
+            this.imgs = [];
             this._super(config);
         },
 
