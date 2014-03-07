@@ -28,7 +28,6 @@
             var me = this;
             me.intervalId = setInterval(function(){
                 me.doSprite(me.count);
-                me.execute();
             }, me.interval);
         },
 
