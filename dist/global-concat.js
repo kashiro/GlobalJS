@@ -901,15 +901,12 @@
          * @private
          */
         _prepareImages: function(imgs) {
-            var me = this,
-                getParamPrefix,
-                t = new Date().getTime();
+            var me = this;
             Global.core.Array.each(imgs, function(index, obj){
-                getParamPrefix = (obj.src).indexOf('?') !== -1 ? '&cache=' : '?cache=';
                 obj.img.onload = function(e){
                     me._onLoad(e, this);
                 };
-                obj.img.src = obj.src + getParamPrefix + t;
+                obj.img.src = obj.src;
 
                 // for cached
                 if(obj.img.complete){
