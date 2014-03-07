@@ -119,6 +119,7 @@
             imgs.push(current);
             percentage = this._getPercentage(srcs.length, imgs.length);
 
+            this.setImgs(imgs);
             eData = this._getEventData(current, percentage);
             this._doDispatchEvent(eData);
         },

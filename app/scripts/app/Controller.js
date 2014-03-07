@@ -48,6 +48,8 @@
             this.elmCaches = {};
             this._super(config);
 
+            this._setElmCaches(this.getRefs());
+
             if(config && config.events){
                 this._applyEvents(config.events);
             }
@@ -60,6 +62,13 @@
                 this.elmCaches[key] = $elm;
             }
             return !$elm || $elm.length === 0 ? undefined : $elm;
+        },
+
+        _setElmCaches: function(refs){
+            var me = this, key;
+            for(key in refs){
+                me.getCacheRef(key, refs[key]);
+            }
         },
 
         _applyEvents: function(events){

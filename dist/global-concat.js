@@ -289,7 +289,6 @@
     --------------------------------*/
     Global.regist('Global', Global);
     Global._makeWhetherFun();
-    console.log(Global.isString('11111'));
 }(window));
 
 (function(){
@@ -929,6 +928,7 @@
             imgs.push(current);
             percentage = this._getPercentage(srcs.length, imgs.length);
 
+            this.setImgs(imgs);
             eData = this._getEventData(current, percentage);
             this._doDispatchEvent(eData);
         },
@@ -987,17 +987,11 @@
         },
 
         execute: function(){
-            var me = this,
-                g = Global,
-                config = {
-                    callback: g.Functions.bind(function(id, count){
-                        me.doSprite(count);
-                        me.execute();
-                    }, me, [me.count]),
-                    interval: me.interval
-                },
-                callback = g.Functions.createDebounce(config);
-            me.intervalId = g.util.RequestAnimationFrame.start(callback);
+            var me = this;
+            me.intervalId = setInterval(function(){
+                me.doSprite(me.count);
+                me.execute();
+            }, me.interval);
         },
 
         doSprite: function(count){
@@ -1126,6 +1120,8 @@
             this.elmCaches = {};
             this._super(config);
 
+            this._setElmCaches(this.getRefs());
+
             if(config && config.events){
                 this._applyEvents(config.events);
             }
@@ -1138,6 +1134,13 @@
                 this.elmCaches[key] = $elm;
             }
             return !$elm || $elm.length === 0 ? undefined : $elm;
+        },
+
+        _setElmCaches: function(refs){
+            var me = this, key;
+            for(key in refs){
+                me.getCacheRef(key, refs[key]);
+            }
         },
 
         _applyEvents: function(events){

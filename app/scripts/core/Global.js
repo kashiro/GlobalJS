@@ -239,5 +239,4 @@
     --------------------------------*/
     Global.regist('Global', Global);
     Global._makeWhetherFun();
-    console.log(Global.isString('11111'));
 }(window));

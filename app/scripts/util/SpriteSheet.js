@@ -25,17 +25,11 @@
         },
 
         execute: function(){
-            var me = this,
-                g = Global,
-                config = {
-                    callback: g.Functions.bind(function(id, count){
-                        me.doSprite(count);
-                        me.execute();
-                    }, me, [me.count]),
-                    interval: me.interval
-                },
-                callback = g.Functions.createDebounce(config);
-            me.intervalId = g.util.RequestAnimationFrame.start(callback);
+            var me = this;
+            me.intervalId = setInterval(function(){
+                me.doSprite(me.count);
+                me.execute();
+            }, me.interval);
         },
 
         doSprite: function(count){
