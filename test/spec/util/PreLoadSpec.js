@@ -59,7 +59,7 @@ describe('Test for util/PreLoad.js', function () {
             imgs = [],
             srcsStub = sinon.stub(instance, 'getSrcs').returns(srcs),
             imgsStub = sinon.stub(instance, 'getImgs').returns(imgs),
-            eData = {currentTarget: 'bbb'},
+            eData = {currentTarget: {src: 'aaaa?cache=1111'}},
             expectEdata = {current: eData.currentTarget, percentage: 50},
             spy = sinon.spy(instance, '_doDispatchEvent');
 
@@ -81,11 +81,13 @@ describe('Test for util/PreLoad.js', function () {
                 img2 = document.createElement('img'),
                 obj1 = {
                     img: img1,
-                    src: 'test1.png'
+                    src: 'test1.png',
+                    cacheBusterSrc: 'test1.png?cache=123'
                 },
                 obj2 = {
                     img: img2,
-                    src: 'test2.png'
+                    src: 'test2.png',
+                    cacheBuster: 'test2.png?cache=123'
                 },
                 protocol = location.protocol,
                 host = location.host;
@@ -93,8 +95,8 @@ describe('Test for util/PreLoad.js', function () {
             instance._prepareImages([obj1, obj2]);
             expect(img1.onload).to.be.a('function');
             expect(img2.onload).to.be.a('function');
-            expect(img1.src).to.eql(protocol + '//' + host + '/' + obj1.src);
-            expect(img2.src).to.eql(protocol + '//' + host + '/' + obj2.src);
+            expect(img1.src).to.eql(protocol + '//' + host + '/' + obj1.cacheBusterSrc);
+            expect(img2.src).to.eql(protocol + '//' + host + '/' + obj2.cacheBusterSrc);
         });
     });
 

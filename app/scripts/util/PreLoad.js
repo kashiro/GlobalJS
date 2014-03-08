@@ -36,6 +36,8 @@
 
         imgs : [],
 
+        cacheBuster: null,
+
         eventName: {
             /**
              * @event
@@ -65,6 +67,7 @@
         init: function(config) {
             this.srcs = [];
             this.imgs = [];
+            this.cacheBuster = 'cache=' + new Date().getTime();
             this._super(config);
         },
 
@@ -75,14 +78,17 @@
          * @param {String[]} srcs image path list
          */
         load: function(){
-            var srcs = this.getSrcs(),
+            var me = this,
+                srcs = this.getSrcs(),
                 orgImg = document.createElement('img'),
+                cacheBuster = this.getCacheBuster(),
                 list = [];
 
             Global.core.Array.each(srcs, function(index, src){
                 list.push({
                     img : orgImg.cloneNode(),
-                    src : src
+                    src : src,
+                    cacheBusterSrc: me._addCacheBuster(src, cacheBuster)
                 });
             });
             this._prepareImages(list);
@@ -97,7 +103,7 @@
                 obj.img.onload = function(e){
                     me._onLoad(e, this);
                 };
-                obj.img.src = obj.src;
+                obj.img.src = obj.cacheBusterSrc;
 
                 // for cached
                 if(obj.img.complete){
@@ -108,10 +114,21 @@
         /**
          * @private
          */
+        _addCacheBuster: function(url, cacheBuster){
+            return url.indexOf('?') !== -1 ? '&' + cacheBuster : '?' + cacheBuster;
+        },
+        _removeCacheBuster: function(url, cacheBuster){
+            var targetIndex = url.indexOf(cacheBuster) -1;
+            return url.slice(0, targetIndex);
+        },
+        /**
+         * @private
+         */
         _onLoad: function(e, context){
             var srcs = this.getSrcs(),
                 imgs = this.getImgs(),
-                percentage, eData, current;
+                cacheBuster = this.getCacheBuster(),
+                percentage, eData, current, orgSrc, tmp = {};
 
             if(e){
                 current = e.currentTarget;
@@ -120,11 +137,14 @@
                 current = context;
             }
 
-            imgs.push(current);
-            percentage = this._getPercentage(srcs.length, imgs.length);
-
+            orgSrc = this._removeCacheBuster(current.src, cacheBuster);
+            tmp[orgSrc] = current;
+            imgs.push(tmp);
             this.setImgs(imgs);
+
+            percentage = this._getPercentage(srcs.length, imgs.length);
             eData = this._getEventData(current, percentage);
+
             this._doDispatchEvent(eData);
         },
         /**
@@ -140,8 +160,8 @@
         /**
          * @private
          */
-        _getPercentage: function(maxLenght, currentLength){
-            return (currentLength / maxLenght) * 100;
+        _getPercentage: function(maxLength, currentLength){
+            return (currentLength / maxLength) * 100;
         },
         /**
          * @private
