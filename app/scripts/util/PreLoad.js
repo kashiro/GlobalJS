@@ -34,7 +34,7 @@
 
         srcs: [],
 
-        imgs : [],
+        imgs : {},
 
         cacheBuster: null,
 
@@ -66,7 +66,7 @@
          */
         init: function(config) {
             this.srcs = [];
-            this.imgs = [];
+            this.imgs = {};
             this.cacheBuster = 'cache=' + new Date().getTime();
             this._super(config);
         },
@@ -128,7 +128,7 @@
             var srcs = this.getSrcs(),
                 imgs = this.getImgs(),
                 cacheBuster = this.getCacheBuster(),
-                percentage, eData, current, orgSrc, tmp = {};
+                percentage, eData, current, orgSrc;
 
             if(e){
                 current = e.currentTarget;
@@ -138,11 +138,10 @@
             }
 
             orgSrc = this._removeCacheBuster(current.src, cacheBuster);
-            tmp[orgSrc] = current;
-            imgs.push(tmp);
+            imgs[orgSrc] = current;
             this.setImgs(imgs);
 
-            percentage = this._getPercentage(srcs.length, imgs.length);
+            percentage = this._getPercentage(srcs.length, Global.keys(imgs).length);
             eData = this._getEventData(current, percentage);
 
             this._doDispatchEvent(eData);

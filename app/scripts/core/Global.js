@@ -72,14 +72,14 @@
             }
             if(hasObjectKeys){
                 res = Object.keys(obj);
-            }
-            for(key in obj){
-                if(obj.hasOwnProperty(key)){
-                    res.push(key);
+            }else{
+                for(key in obj){
+                    if(obj.hasOwnProperty(key)){
+                        res.push(key);
+                    }
                 }
             }
             return res;
-
         },
         /**
          * @method isObject

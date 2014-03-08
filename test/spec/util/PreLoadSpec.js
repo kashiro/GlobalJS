@@ -56,10 +56,10 @@ describe('Test for util/PreLoad.js', function () {
 
     describe('#_onLoad', function () {
         var srcs = ['test', 'hoge'],
-            imgs = [],
+            imgs = {},
             srcsStub = sinon.stub(instance, 'getSrcs').returns(srcs),
             imgsStub = sinon.stub(instance, 'getImgs').returns(imgs),
-            eData = {currentTarget: {src: 'aaaa?cache=1111'}},
+            eData = {currentTarget: {src: 'test?cache=1111'}},
             expectEdata = {current: eData.currentTarget, percentage: 50},
             spy = sinon.spy(instance, '_doDispatchEvent');
 
