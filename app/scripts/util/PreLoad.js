@@ -115,7 +115,8 @@
          * @private
          */
         _addCacheBuster: function(url, cacheBuster){
-            return url.indexOf('?') !== -1 ? '&' + cacheBuster : '?' + cacheBuster;
+            var cache = url.indexOf('?') !== -1 ? '&' + cacheBuster : '?' + cacheBuster;
+            return url + cache;
         },
         _removeCacheBuster: function(url, cacheBuster){
             var targetIndex = url.indexOf(cacheBuster) -1;
