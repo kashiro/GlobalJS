@@ -119,7 +119,7 @@
          */
         _makeWhetherFun: function(){
             var me = this,
-                list = ['Function', 'String', 'Number', 'Date'];
+                list = ['Function', 'String', 'Number', 'Date', 'Array'];
             $.each(list, function(index, name){
                 me['is' + name] = function(obj){
                     return Object.prototype.toString.call(obj) === '[object ' + name + ']';

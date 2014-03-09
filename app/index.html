@@ -37,8 +37,6 @@
         <!-- build:js scripts/vendor.js -->
         <!-- bower:js -->
         <script src="bower_components/jquery/jquery.js"></script>
-        <script src="bower_components/underscore/underscore-min.js"></script>
-        <script src="scripts/lib/Class.js"></script>
         <!-- endbower -->
         <!-- endbuild -->
 
@@ -53,12 +51,8 @@
         </script>
 
         <!-- build:js scripts/main.js -->
-        <script src="scripts/core/Global.js"></script>
-        <script src="scripts/core/BaseClass.js"></script>
-        <script src="scripts/core/Array.js"></script>
-        <script src="scripts/core/Function.js"></script>
-
-        <script src="scripts/util/function/Debounce.js"></script>
+        <script src="../dist/global-concat.js"></script>
+        <script src="../app/scripts/data/proxy/Proxy.js"></script>
         <!-- endbuild -->
 </body>
 </html>

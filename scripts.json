@@ -16,6 +16,7 @@
         "app/scripts/core/Functions.js",
 
         "app/scripts/data/Map.js",
+        "app/scripts/data/proxy/Proxy.js",
 
         "app/scripts/math/Random.js",
 
@@ -24,6 +25,10 @@
         "app/scripts/util/SpriteSheet.js",
         "app/scripts/util/RequestAnimationFrame.js",
 
-        "app/scripts/app/Controller.js"
+        "app/scripts/view/Modal.js",
+
+        "app/scripts/app/Controller.js",
+
+        "app/scripts/app/Router.js"
     ]
 }

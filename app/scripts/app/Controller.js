@@ -8,40 +8,40 @@
     Global.define('Global.app.Controller',{
 
         /**
-        * @cfg {Object} refs name and selector
-        *
-        *     refs: {
-        *         main: '.main-panel'
-        *     }
-        *
-        */
+         * @cfg {Object} refs name and selector
+         *
+         *     refs: {
+         *         main: '.main-panel'
+         *     }
+         *
+         */
         refs: {},
 
         /**
-        * @cfg {Object} event dispatch settings
-        *
-        * You can set refs names or selectors into each events key.
-        *
-        *     events: {
-        *         main: {
-        *             click: '_onClickMain'
-        *         },
-        *         '.sub': {
-        *             click: '_onClickSub'
-        *         }
-        *     },
-        *
-        * You can also set more options into event settings.
-        *
-        *     events: {
-        *         sub: {
-        *             click: {
-        *                 delegate: '.delegate-selector',
-        *                 handler : '_onClickSub'
-        *             }
-        *         }
-        *     }
-        */
+         * @cfg {Object} event dispatch settings
+         *
+         * You can set refs names or selectors into each events key.
+         *
+         *     events: {
+         *         main: {
+         *             click: '_onClickMain'
+         *         },
+         *         '.sub': {
+         *             click: '_onClickSub'
+         *         }
+         *     },
+         *
+         * You can also set more options into event settings.
+         *
+         *     events: {
+         *         sub: {
+         *             click: {
+         *                 delegate: '.delegate-selector',
+         *                 handler : '_onClickSub'
+         *             }
+         *         }
+         *     }
+         */
         events: {},
 
         init: function(config){
