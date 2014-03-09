@@ -94,7 +94,7 @@
         },
 
         _getCompiledTpl: function(){
-            return _.templte(this.getTpl());
+            return _.template(this.getTpl());
         },
 
         _getModalTplData: function(){
