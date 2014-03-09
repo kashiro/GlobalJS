@@ -6,7 +6,7 @@
      */
     Global.define('Global.view.Modal',{
 
-        extend: Global.core.ObservableClass,
+        extend: Global.core.ManipulateDomClass,
 
         centerd: true,
 
@@ -25,7 +25,6 @@
         compiledTpl: null,
 
         init: function(config) {
-            this.listeners = {};
             this._super(config);
             this.compiledOuterTpl = this._getCompiledOuterTpl();
             this.compiledMaskTpl  = this._getCompiledMaskTpl();
@@ -50,6 +49,8 @@
 
             $elm.show();
             $mask.show();
+
+            this.dispatchEvent(this.EVENT.SHOW);
         },
 
         _create: function(tplData){
@@ -83,6 +84,8 @@
 
             this.$elm = null;
             this.$mask = null;
+
+            this.dispatchEvent(this.EVENT.HIDE);
         },
 
         _getCompiledOuterTpl: function(){

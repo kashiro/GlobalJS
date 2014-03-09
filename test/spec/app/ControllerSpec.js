@@ -4,7 +4,7 @@
 describe('Test for app/Controller.js', function () {
 
     var Controller = Global.app.Controller,
-        instance = new Controller();
+        instance = new Controller({$elm: $('<div><div class="main"></div></div>')});
 
     expect(instance.getCacheRef).to.be.a('function');
 
@@ -12,7 +12,6 @@ describe('Test for app/Controller.js', function () {
 
         it('Class dose not ref cache but create new cache', function () {
             expect(instance.elmCaches.main).to.be(undefined);
-            $('body').append('<div class="main"></div>');
             var $elm = instance.getCacheRef('main', '.main');
 
             expect($elm instanceof jQuery).to.be.ok();

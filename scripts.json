@@ -12,6 +12,7 @@
         "app/scripts/event/EventDispatcher.js",
 
         "app/scripts/core/ObservableClass.js",
+        "app/scripts/core/ManipulateDomClass.js",
         "app/scripts/core/Array.js",
         "app/scripts/core/Functions.js",
 
@@ -25,6 +26,7 @@
         "app/scripts/util/SpriteSheet.js",
         "app/scripts/util/RequestAnimationFrame.js",
 
+        "app/scripts/view/Base.js",
         "app/scripts/view/Modal.js",
 
         "app/scripts/app/Controller.js",
