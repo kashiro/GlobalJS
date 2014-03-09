@@ -470,6 +470,112 @@
 
 (function(){
     'use strict';
+    /**
+     * @class Global.core.ManipulateDomClass
+     * @extends Global.core.ObservableClass
+     */
+    Global.define('Global.core.ManipulateDomClass',{
+
+        extend: Global.core.ObservableClass,
+
+        /**
+         * @cfg {Object} refs name and selector
+         *
+         *     refs: {
+         *         main: '.main-panel'
+         *     }
+         *
+         */
+        refs: {},
+
+        /**
+         * @cfg {Object} event dispatch settings
+         *
+         * You can set refs names or selectors into each events key.
+         *
+         *     events: {
+         *         main: {
+         *             click: '_onClickMain'
+         *         },
+         *         '.sub': {
+         *             click: '_onClickSub'
+         *         }
+         *     },
+         *
+         * You can also set more options into event settings.
+         *
+         *     events: {
+         *         sub: {
+         *             click: {
+         *                 delegate: '.delegate-selector',
+         *                 handler : '_onClickSub'
+         *             }
+         *         }
+         *     }
+         */
+        events: {},
+
+        $elm: null,
+
+        init: function(config){
+            this.listeners = {};
+            this.elmCaches = {};
+            this._super(config);
+
+            this._setElmCaches(this.getRefs());
+
+            if(config && config.events){
+                this._applyEvents(config.events);
+            }
+        },
+
+        getCacheRef: function(key, selector){
+            if(!this.$elm){
+                return;
+            }
+            var cached = this.elmCaches[key],
+                $elm = !cached && selector ? this.$elm.find(selector): undefined ;
+            if(!cached && $elm){
+                this.elmCaches[key] = $elm;
+            }
+            return !$elm || $elm.length === 0 ? undefined : $elm;
+        },
+
+        _setElmCaches: function(refs){
+            var me = this, key;
+            for(key in refs){
+                me.getCacheRef(key, refs[key]);
+            }
+        },
+
+        _applyEvents: function(events){
+            var me = this,
+                $ref,
+                eName,
+                param;
+
+            $.each(events, function(refsKey, val){
+                $ref = me.getCacheRef(refsKey);
+                if(!$ref){
+                    return false;
+                }
+                eName = Global.keys(val)[0];
+                param = val[eName];
+
+                if(Global.isObject(param) && param.delegate){
+                    $ref.on(eName, param.delegate, $.proxy(me[param.handler], me));
+                }else if(Global.isString(param)){
+                    $ref.on(eName, $.proxy(me[param], me));
+                }
+
+            });
+        }
+
+    });
+})();
+
+(function(){
+    'use strict';
 
     /**
      * @class Global.core.Array
@@ -1139,11 +1245,46 @@
     'use strict';
 
     /**
+     * @class Global.view.Base
+     * base class of view.
+     * @extend Global.view.Base
+     */
+    Global.define('Global.view.Base',{
+
+        extend: Global.core.ManipulateDomClass,
+
+        EVENT: {
+            SHOW: 'show',
+            HIDE: 'hide'
+        },
+
+        show: function(){
+            var $elm = this.get$elm();
+
+            $elm.show();
+            this.dispatchEvent(this.EVENT.SHOW);
+        },
+
+        hide: function(){
+            var $elm = this.get$elm();
+
+            $elm.hide();
+            $elm.remove();
+            this.dispatchEvent(this.EVENT.HIDE);
+        }
+
+    });
+})();
+
+(function(){
+    'use strict';
+
+    /**
      * @class Global.view.Modal
      */
     Global.define('Global.view.Modal',{
 
-        extend: Global.core.ObservableClass,
+        extend: Global.core.ManipulateDomClass,
 
         centerd: true,
 
@@ -1162,7 +1303,6 @@
         compiledTpl: null,
 
         init: function(config) {
-            this.listeners = {};
             this._super(config);
             this.compiledOuterTpl = this._getCompiledOuterTpl();
             this.compiledMaskTpl  = this._getCompiledMaskTpl();
@@ -1187,6 +1327,8 @@
 
             $elm.show();
             $mask.show();
+
+            this.dispatchEvent(this.EVENT.SHOW);
         },
 
         _create: function(tplData){
@@ -1220,6 +1362,8 @@
 
             this.$elm = null;
             this.$mask = null;
+
+            this.dispatchEvent(this.EVENT.HIDE);
         },
 
         _getCompiledOuterTpl: function(){
@@ -1252,95 +1396,12 @@
     /**
      * @class Global.app.Controller
      * This is base controller.
+     * @extend Global.core.ManipulateDomClass
      */
     Global.define('Global.app.Controller',{
 
-        /**
-         * @cfg {Object} refs name and selector
-         *
-         *     refs: {
-         *         main: '.main-panel'
-         *     }
-         *
-         */
-        refs: {},
+        extend: Global.core.ManipulateDomClass
 
-        /**
-         * @cfg {Object} event dispatch settings
-         *
-         * You can set refs names or selectors into each events key.
-         *
-         *     events: {
-         *         main: {
-         *             click: '_onClickMain'
-         *         },
-         *         '.sub': {
-         *             click: '_onClickSub'
-         *         }
-         *     },
-         *
-         * You can also set more options into event settings.
-         *
-         *     events: {
-         *         sub: {
-         *             click: {
-         *                 delegate: '.delegate-selector',
-         *                 handler : '_onClickSub'
-         *             }
-         *         }
-         *     }
-         */
-        events: {},
-
-        init: function(config){
-            this.elmCaches = {};
-            this._super(config);
-
-            this._setElmCaches(this.getRefs());
-
-            if(config && config.events){
-                this._applyEvents(config.events);
-            }
-        },
-
-        getCacheRef: function(key, selector){
-            var cached = this.elmCaches[key],
-                $elm = !cached && selector ? $(selector): undefined ;
-            if(!cached && $elm){
-                this.elmCaches[key] = $elm;
-            }
-            return !$elm || $elm.length === 0 ? undefined : $elm;
-        },
-
-        _setElmCaches: function(refs){
-            var me = this, key;
-            for(key in refs){
-                me.getCacheRef(key, refs[key]);
-            }
-        },
-
-        _applyEvents: function(events){
-            var me = this,
-                $ref,
-                eName,
-                param;
-
-            $.each(events, function(refsKey, val){
-                $ref = me.getCacheRef(refsKey);
-                if(!$ref){
-                    return false;
-                }
-                eName = Global.keys(val)[0];
-                param = val[eName];
-
-                if(Global.isObject(param) && param.delegate){
-                    $ref.on(eName, param.delegate, $.proxy(me[param.handler], me));
-                }else if(Global.isString(param)){
-                    $ref.on(eName, $.proxy(me[param], me));
-                }
-
-            });
-        }
     });
 })();
 
