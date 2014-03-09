@@ -86,11 +86,11 @@
         },
 
         _getCompiledOuterTpl: function(){
-            return _.templte(this.getOuterTpl());
+            return _.template(this.getOuterTpl());
         },
 
         _getCompiledMaskTpl: function(){
-            return _.templte(this.getMaskTpl());
+            return _.template(this.getMaskTpl());
         },
 
         _getCompiledTpl: function(){
