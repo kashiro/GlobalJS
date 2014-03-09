@@ -169,7 +169,7 @@
          */
         _makeWhetherFun: function(){
             var me = this,
-                list = ['Function', 'String', 'Number', 'Date'];
+                list = ['Function', 'String', 'Number', 'Date', 'Array'];
             $.each(list, function(index, name){
                 me['is' + name] = function(obj){
                     return Object.prototype.toString.call(obj) === '[object ' + name + ']';
@@ -680,6 +680,48 @@
 
 (function(){
     'use strict';
+    /**
+     * @class Global.data.proxy.Proxy
+     */
+    Global.define('Global.data.proxy.Proxy',{
+
+        extend: Global.core.ObservableClass,
+
+        singleRequest: true,
+
+        isRequesting: false,
+
+        init: function(config) {
+            this.listeners = {};
+            this._super(config);
+        },
+
+        get: function(param){
+            var me = this,
+                dfd = $.Deferred();
+
+            if(me.getSingleRequest() &&  me.getIsRequest()){
+                return;
+            }
+
+            me.setIsRequesting(true);
+            $.ajax(param)
+                .done(function(e){
+                    me.setIsRequesting(false);
+                    dfd.resolve(e);
+                })
+                .fail(function(e){
+                    me.setIsRequesting(false);
+                    dfd.reject(e);
+                });
+
+            return dfd.promise();
+        }
+    });
+})();
+
+(function(){
+    'use strict';
 
     /**
      * @class Global.math.Random
@@ -1097,46 +1139,157 @@
     'use strict';
 
     /**
+     * @class Global.view.Modal
+     */
+    Global.define('Global.view.Modal',{
+
+        extend: Global.core.ObservableClass,
+
+        centerd: true,
+
+        cls: null,
+
+        hideOnMaskClick: false,
+
+        outerTpl: '<div class="g-modal <%= centerdCls %> <%= cls %>"></div>',
+        maskTpl: '<div class="g-modal__mask <%= centerdCls %> <%= cls %>"></div>',
+        tpl: [],
+
+        $elm: null,
+
+        compiledOuterTpl: null,
+        compiledMaskTpl: null,
+        compiledTpl: null,
+
+        init: function(config) {
+            this.listeners = {};
+            this.compiledOuterTpl = this._getCompiledOuterTpl();
+            this.compiledMaskTpl  = this._getCompiledMaskTpl();
+            this.compiledTpl = this._getCompiledTpl();
+            this._super(config);
+        },
+
+        show: function(config){
+            var tplData =this._getTplData(config),
+                $elm, $mask, $body;
+
+            if(this.$elm){
+                return;
+            }
+
+            this._create(tplData);
+            $elm = this.$elm;
+            $mask = this.$mask;
+            $body = $(document.body);
+
+            $body.append($elm);
+            $body.append($mask);
+
+            $elm.show();
+            $mask.show();
+        },
+
+        _create: function(tplData){
+            var compiledOuterTpl = this.getCompiledOuterTpl(),
+                compiledMaskTpl = this.getCompiledMaskTpl(),
+                compiledTpl = this.getCompiledTpl(),
+                outerHtml = compiledOuterTpl(tplData),
+                maskHtml = compiledMaskTpl(tplData),
+                html = compiledTpl(tplData),
+                $elm = $(outerHtml),
+                $mask = $(maskHtml);
+
+            $elm.append(html);
+            $elm.hide();
+            $mask.hide();
+
+            this.$elm = $elm;
+            this.$mask = $mask;
+        },
+
+        _getTplData: function(config){
+            var modalTplData = this._getModalTplData();
+            return $.extend(true, {}, modalTplData, config);
+        },
+
+        hide:function(){
+            this.$elm.hide();
+            this.$elm.remove();
+            this.$mask.hide();
+            this.$mask.remove();
+
+            this.$elm = null;
+            this.$mask = null;
+        },
+
+        _getCompiledOuterTpl: function(){
+            return _.templte(this.getOuterTpl());
+        },
+
+        _getCompiledMaskTpl: function(){
+            return _.templte(this.getMaskTpl());
+        },
+
+        _getCompiledTpl: function(){
+            return _.templte(this.getTpl());
+        },
+
+        _getModalTplData: function(){
+            var cls = this.getCls() ? this.getCls() : '',
+                centerdCls= this.getCenterd() ? 'g-modal--centerd' : '';
+            return {
+                'cls'       : cls,
+                'centerdCls': centerdCls
+            };
+        }
+
+    });
+})();
+
+(function(){
+    'use strict';
+
+    /**
      * @class Global.app.Controller
      * This is base controller.
      */
     Global.define('Global.app.Controller',{
 
         /**
-        * @cfg {Object} refs name and selector
-        *
-        *     refs: {
-        *         main: '.main-panel'
-        *     }
-        *
-        */
+         * @cfg {Object} refs name and selector
+         *
+         *     refs: {
+         *         main: '.main-panel'
+         *     }
+         *
+         */
         refs: {},
 
         /**
-        * @cfg {Object} event dispatch settings
-        *
-        * You can set refs names or selectors into each events key.
-        *
-        *     events: {
-        *         main: {
-        *             click: '_onClickMain'
-        *         },
-        *         '.sub': {
-        *             click: '_onClickSub'
-        *         }
-        *     },
-        *
-        * You can also set more options into event settings.
-        *
-        *     events: {
-        *         sub: {
-        *             click: {
-        *                 delegate: '.delegate-selector',
-        *                 handler : '_onClickSub'
-        *             }
-        *         }
-        *     }
-        */
+         * @cfg {Object} event dispatch settings
+         *
+         * You can set refs names or selectors into each events key.
+         *
+         *     events: {
+         *         main: {
+         *             click: '_onClickMain'
+         *         },
+         *         '.sub': {
+         *             click: '_onClickSub'
+         *         }
+         *     },
+         *
+         * You can also set more options into event settings.
+         *
+         *     events: {
+         *         sub: {
+         *             click: {
+         *                 delegate: '.delegate-selector',
+         *                 handler : '_onClickSub'
+         *             }
+         *         }
+         *     }
+         */
         events: {},
 
         init: function(config){
@@ -1188,5 +1341,36 @@
 
             });
         }
+    });
+})();
+
+(function(){
+    'use strict';
+
+    /**
+     * @class Global.app.Router
+     */
+    Global.define('Global.app.Router',{
+
+        /**
+         * routing
+         * @cfg {Object} path and controller class
+         *
+         *     routing: {
+         *         '/'    : App.controller.Main,
+         *         '/list': App.controller.List
+         *     }
+         */
+        routing: {
+        },
+
+        start: function() {
+            var pathName = location.pathname,
+                routing  = this.getRouting(),
+                Klass    = routing[pathName],
+                instance = new Klass();
+            Klass = instance;
+        }
+
     });
 })();
