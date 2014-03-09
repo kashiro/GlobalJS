@@ -1163,10 +1163,10 @@
 
         init: function(config) {
             this.listeners = {};
+            this._super(config);
             this.compiledOuterTpl = this._getCompiledOuterTpl();
             this.compiledMaskTpl  = this._getCompiledMaskTpl();
             this.compiledTpl = this._getCompiledTpl();
-            this._super(config);
         },
 
         show: function(config){
