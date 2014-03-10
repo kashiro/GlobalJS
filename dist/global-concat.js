@@ -868,7 +868,7 @@
         _request: function(param) {
             var me = this,
                 dfd = $.Deferred(),
-                ajaxDfd = this.getProxy().get(param);
+                ajaxDfd = this.proxy.get(param);
 
             ajaxDfd.done(function(e){
                 me._onSuccess(dfd, e);
