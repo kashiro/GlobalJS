@@ -856,8 +856,8 @@
 
         init: function(config){
             this.listeners = {};
-            this.proxy = new this.getProxy();
             this._super(config);
+            this.proxy = new this.getProxy();
         },
 
         get: function(param){
