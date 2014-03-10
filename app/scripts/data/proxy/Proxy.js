@@ -20,7 +20,7 @@
             var me = this,
                 dfd = $.Deferred();
 
-            if(me.getSingleRequest() &&  me.getIsRequest()){
+            if(me.getSingleRequest() &&  me.getIsRequesting()){
                 return;
             }
 
