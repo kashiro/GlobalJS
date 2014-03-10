@@ -862,7 +862,7 @@
 
         get: function(param){
             var _param = this._getRequestObj('GET', param);
-            this._request(_param);
+            return this._request(_param);
         },
 
         _request: function(param) {
