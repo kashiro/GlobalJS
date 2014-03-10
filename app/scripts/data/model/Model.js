@@ -29,7 +29,7 @@
         init: function(config){
             this.listeners = {};
             this._super(config);
-            this.proxy = new this.getProxy();
+            this.proxy = new this.proxy;
         },
 
         get: function(param){
