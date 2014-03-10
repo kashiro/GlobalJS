@@ -18,6 +18,7 @@
 
         "app/scripts/data/Map.js",
         "app/scripts/data/proxy/Proxy.js",
+        "app/scripts/data/model/Model.js",
 
         "app/scripts/math/Random.js",
 
