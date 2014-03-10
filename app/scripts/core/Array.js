@@ -113,6 +113,14 @@
                 }
             }
             return false;
+        },
+
+        /**
+         * @method remove
+         */
+        remove: function(target, index, count){
+            var _count = count || 1;
+            target.splice(index, _count);
         }
 
     });
