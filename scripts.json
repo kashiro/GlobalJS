@@ -27,6 +27,8 @@
         "app/scripts/util/SpriteSheet.js",
         "app/scripts/util/RequestAnimationFrame.js",
 
+        "app/scripts/media/video/YouTubeEmbed.js",
+
         "app/scripts/view/Base.js",
         "app/scripts/view/Modal.js",
 
