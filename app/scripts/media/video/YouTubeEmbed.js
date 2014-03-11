@@ -86,7 +86,7 @@
         _onReadyVideo: function(/*e*/){
             this.dispatchEvent(this.getEventName().loadPlayer, {currentTarget: this});
             // override as you like
-            //e.playVideo();
+            // event.target.playVideo();
         }
 
     });
