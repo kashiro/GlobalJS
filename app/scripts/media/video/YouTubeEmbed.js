@@ -15,6 +15,8 @@
 
         $elm: null,
 
+        id: '',
+
         sdkId: 'g-youtube-embed',
 
         sdkSrc: 'https://www.youtube.com/iframe_api',
@@ -48,12 +50,12 @@
         },
 
         _hasSdk: function(){
-            var $sdk = $('#' + this._getSdkId());
+            var $sdk = $('#' + this.getSdkId());
             return ($sdk.length > 0) && window.YT;
         },
 
         _getSdkCode: function(){
-            var $script = $('script'),
+            var $script = $('<script>'),
                 id = this.getSdkId(),
                 src = this.getSdkSrc();
             $script.prop('id', id);
@@ -68,7 +70,7 @@
         },
 
         _createEmbedInstance: function(param){
-            return new window.YT.Player('player',param);
+            return new window.YT.Player(this.getId(), param);
         },
 
         _getParam: function(){
@@ -78,7 +80,7 @@
                         'onReady': Global.Functions.bind(this._onReadyVideo, this)
                     }
                 };
-            return $.exted(true, {}, param, add);
+            return $.extend(true, {}, param, add);
         },
 
         _onReadyVideo: function(/*e*/){
