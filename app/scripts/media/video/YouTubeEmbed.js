@@ -2,9 +2,9 @@
     'use strict';
 
     /**
-     * @class Global.media.video.YoutubeEmbed
+     * @class Global.media.video.YouTubeEmbed
      */
-    Global.define('Global.media.video.YoutubeEmbed',{
+    Global.define('Global.media.video.YouTubeEmbed',{
 
         extend: Global.ObservableClass,
 
