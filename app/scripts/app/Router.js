@@ -21,9 +21,19 @@
         start: function() {
             var pathName = location.pathname,
                 routing  = this.getRouting(),
-                Klass    = routing[pathName],
-                instance = new Klass();
+                Klass    = this._getController(pathName, routing),
+                instance = Klass ? new Klass() : undefined;
             Klass = instance;
+        },
+
+        _getController: function(path, routing){
+            var pattern = /\/$/,
+                hasLastSlash = pattern.test(path) ? path : path + '/',
+                noLastSlash  = pattern.test(path) ? path.slice(0, -1) : path,
+                hasLastSlashClass = routing[hasLastSlash],
+                noLastSlashClass = routing[noLastSlash];
+
+            return hasLastSlashClass ? hasLastSlashClass : noLastSlashClass;
         }
 
     });
