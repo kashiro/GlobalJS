@@ -1243,7 +1243,13 @@
 
         init: function(config){
             this.$elm = $(config.targetSelector);
+            config = this._modifyConfig();
             this._super(config);
+        },
+
+        _modifyConfig: function(config){
+            config.classList = config.classList ? config.classList.unshift('') : [];
+            return config;
         },
 
         execute: function(){
