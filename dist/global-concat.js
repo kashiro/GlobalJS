@@ -1247,23 +1247,14 @@
 
         count: 0,
 
+        isFirst: true,
+
         intervalId: null,
 
         init: function(config){
             this.listeners = {};
             this.$elm = $(config.targetSelector);
-            config = this._modifyConfig(config);
             this._super(config);
-        },
-
-        _modifyConfig: function(config){
-            if(config.classList){
-                config.classList.unshift('');
-            }else{
-                config.classList = [];
-            }
-
-            return config;
         },
 
         execute: function(){
@@ -1300,10 +1291,13 @@
         },
 
         getClass: function(count){
-            var me = this;
+            var me = this,
+                current = me.isFirst ? '' : me.classList[count],
+                next    = me.isFirst ? me.classList[count] : me.classList[count + 1];
+            me.isFirst = false;
             return {
-                current: me.classList[count],
-                next   : me.classList[count + 1]
+                current: current,
+                next   : next
             };
         }
     });
