@@ -1243,7 +1243,7 @@
 
         init: function(config){
             this.$elm = $(config.targetSelector);
-            config = this._modifyConfig();
+            config = this._modifyConfig(config);
             this._super(config);
         },
 
