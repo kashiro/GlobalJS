@@ -54,9 +54,7 @@
 
             this._setElmCaches(this.getRefs());
 
-            if(config && config.events){
-                this._applyEvents(config.events);
-            }
+            this._applyEvents(this.getEvents());
         },
 
         getCacheRef: function(key, selector){
