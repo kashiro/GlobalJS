@@ -1494,6 +1494,11 @@
         cls: null,
 
         hideOnMaskClick: false,
+        
+        eventName: {
+            show: 'show',
+            hide: 'hide'
+        },
 
         outerTpl: '<div class="g-modal <%= centerdCls %> <%= cls %>"></div>',
         maskTpl: '<div class="g-modal__mask <%= centerdCls %> <%= cls %>"></div>',
@@ -1531,7 +1536,7 @@
             $elm.show();
             $mask.show();
 
-            this.dispatchEvent(this.EVENT.SHOW);
+            this.dispatchEvent(this.getEventName().show);
         },
 
         _create: function(tplData){
@@ -1566,7 +1571,7 @@
             this.$elm = null;
             this.$mask = null;
 
-            this.dispatchEvent(this.EVENT.HIDE);
+            this.dispatchEvent(this.getEventName().hide);
         },
 
         _getCompiledOuterTpl: function(){
