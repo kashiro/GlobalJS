@@ -532,11 +532,11 @@
                 return;
             }
             var cached = this.elmCaches[key],
-                $elm = !cached && selector ? this.$elm.find(selector): undefined ;
+                $elm = !cached && selector ? this.$elm.find(selector): undefined;
             if(!cached && $elm){
                 this.elmCaches[key] = $elm;
             }
-            return !$elm || $elm.length === 0 ? undefined : $elm;
+            return this.elmCaches[key];
         },
 
         _setElmCaches: function(refs){
