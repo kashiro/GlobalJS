@@ -1487,7 +1487,7 @@
      */
     Global.define('Global.view.Modal',{
 
-        extend: Global.view.Base,
+        extend: Global.core.ManipulateDomClass,
 
         centerd: true,
 
