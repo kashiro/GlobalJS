@@ -1275,24 +1275,24 @@
         },
 
         countUp: function(count){
-            if(this.getSingleRun()){
-                this.count = ++count;
-                return;
-            }
-
-            if(count === this.classList.length - 1){
+            if(!this.getSingleRun() && count === this.classList.length - 1){
                 count = 0;
             }else{
-                count += 1;
+                if(this.isFirst){
+                    this.isFirst = false;
+                    return;
+                }else{
+                    count += 1;
+                }
             }
             this.count = count;
+
         },
 
         getClass: function(count){
             var me = this,
                 current = me.isFirst ? '' : me.classList[count],
                 next    = me.isFirst ? me.classList[count] : me.classList[count + 1];
-            me.isFirst = false;
             return {
                 current: current,
                 next   : next
