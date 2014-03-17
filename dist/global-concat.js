@@ -1258,7 +1258,7 @@
         execute: function(){
             var me = this;
             me.intervalId = setInterval(function(){
-                if(me.getSingleRun() && (me.count >= me.classList.length)){
+                if(me.getSingleRun() && (me.count >= me.classList.length -2)){
                     window.clearInterval(me.intervalId);
                     me.dispatchEvent(me.eventName.end);
                 }
