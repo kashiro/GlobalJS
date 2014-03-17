@@ -96,6 +96,7 @@ input, textarea, select, label {
     font-size: 100%;
     font-family: inherit;
     vertical-align: middle;
+    resize: none;
 }
 label { cursor: pointer; }
 textarea { overflow: auto; }
