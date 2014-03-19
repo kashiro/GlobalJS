@@ -1556,7 +1556,7 @@
             this.$elm = $elm;
             this.$mask = $mask;
 
-            if(this.getHideOnMaskClick(){
+            if(this.getHideOnMaskClick()){
                 this._bindMaskClickHide($mask);
             }
         },
@@ -1566,7 +1566,7 @@
             $mask.on('click', function(){
                 me.hide();
             });
-        }
+        },
 
         _getTplData: function(config){
             var modalTplData = this._getModalTplData();
