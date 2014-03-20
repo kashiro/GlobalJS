@@ -1558,6 +1558,8 @@
 
             if(this.getHideOnMaskClick()){
                 this._bindMaskClickHide($mask);
+            }else{
+                this._bindMaskClickNone($mask);
             }
         },
 
@@ -1565,6 +1567,14 @@
             var me = this;
             $mask.on('click', function(){
                 me.hide();
+            });
+        },
+        
+        _bindMaskClickNone: function($mask){
+            var me = this;
+            $mask.on('click', function(e){
+                e.preventDefault();
+                e.stopPropagation();
             });
         },
 
