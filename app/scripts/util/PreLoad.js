@@ -37,6 +37,8 @@
         imgs : {},
 
         cacheBuster: null,
+        
+        useCacheBuster: false,
 
         eventName: {
             /**
@@ -103,7 +105,12 @@
                 obj.img.onload = function(e){
                     me._onLoad(e, this);
                 };
-                obj.img.src = obj.cacheBusterSrc;
+                
+                if(me.getUseCacheBuster()){
+                    obj.img.src = obj.cacheBusterSrc;  
+                }else{
+                    obj.img.src = obj.src;
+                }
 
                 // for cached
                 if(obj.img.complete){
@@ -138,7 +145,12 @@
                 current = context;
             }
 
-            orgSrc = this._removeCacheBuster(current.src, cacheBuster);
+            if(me.getUseCacheBuster()){
+                orgSrc = this._removeCacheBuster(current.src, cacheBuster);
+            }else{
+                orgSrc = current.src;
+            }
+            
             imgs[orgSrc] = current;
             this.setImgs(imgs);
 
