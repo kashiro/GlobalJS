@@ -63,9 +63,15 @@
             }
             var cached = this.elmCaches[key],
                 $elm = !cached && selector ? this.$elm.find(selector): undefined;
-            if(!cached && $elm){
+
+            if($elm && $elm.length === 0){
+                $elm = undefined;
+            }
+
+            if(!cached){
                 this.elmCaches[key] = $elm;
             }
+
             return this.elmCaches[key];
         },
 

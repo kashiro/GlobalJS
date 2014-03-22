@@ -95,8 +95,8 @@ describe('Test for util/PreLoad.js', function () {
             instance._prepareImages([obj1, obj2]);
             expect(img1.onload).to.be.a('function');
             expect(img2.onload).to.be.a('function');
-            expect(img1.src).to.eql(protocol + '//' + host + '/' + obj1.cacheBusterSrc);
-            expect(img2.src).to.eql(protocol + '//' + host + '/' + obj2.cacheBusterSrc);
+            expect(img1.src).to.eql(protocol + '//' + host + '/' + obj1.src);
+            expect(img2.src).to.eql(protocol + '//' + host + '/' + obj2.src);
         });
     });
 

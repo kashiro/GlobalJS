@@ -88,9 +88,8 @@
                 me.hide();
             });
         },
-        
+
         _bindMaskClickNone: function($mask){
-            var me = this;
             $mask.on('click', function(e){
                 e.preventDefault();
                 e.stopPropagation();

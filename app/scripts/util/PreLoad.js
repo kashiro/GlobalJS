@@ -37,7 +37,7 @@
         imgs : {},
 
         cacheBuster: null,
-        
+
         useCacheBuster: false,
 
         eventName: {
@@ -105,9 +105,9 @@
                 obj.img.onload = function(e){
                     me._onLoad(e, this);
                 };
-                
+
                 if(me.getUseCacheBuster()){
-                    obj.img.src = obj.cacheBusterSrc;  
+                    obj.img.src = obj.cacheBusterSrc;
                 }else{
                     obj.img.src = obj.src;
                 }
@@ -133,7 +133,8 @@
          * @private
          */
         _onLoad: function(e, context){
-            var srcs = this.getSrcs(),
+            var me = this,
+                srcs = this.getSrcs(),
                 imgs = this.getImgs(),
                 cacheBuster = this.getCacheBuster(),
                 percentage, eData, current, orgSrc;
@@ -150,7 +151,7 @@
             }else{
                 orgSrc = current.src;
             }
-            
+
             imgs[orgSrc] = current;
             this.setImgs(imgs);
 
