@@ -100,18 +100,13 @@
          * @private
          */
         _prepareImages: function(imgs) {
-            var me = this;
+            var me = this,
+                useCacheBuster = me.getUseCacheBuster();
             Global.core.Array.each(imgs, function(index, obj){
                 obj.img.onload = function(e){
                     me._onLoad(e, this);
                 };
-
-                if(me.getUseCacheBuster()){
-                    obj.img.src = obj.cacheBusterSrc;
-                }else{
-                    obj.img.src = obj.src;
-                }
-
+                obj = me._addImgSrc(useCacheBuster, obj);
                 // for cached
                 if(obj.img.complete){
                     me._onLoad({currentTarget: obj.img}, this);
@@ -121,13 +116,30 @@
         /**
          * @private
          */
+        _addImgSrc: function(useCacheBuster, obj){
+            obj.img.src = useCacheBuster ? obj.cacheBusterSrc : obj.src;
+            return obj;
+        },
+        /**
+         * @private
+         */
         _addCacheBuster: function(url, cacheBuster){
             var cache = url.indexOf('?') !== -1 ? '&' + cacheBuster : '?' + cacheBuster;
             return url + cache;
         },
+        /**
+         * @private
+         */
         _removeCacheBuster: function(url, cacheBuster){
             var targetIndex = url.indexOf(cacheBuster) -1;
             return url.slice(0, targetIndex);
+        },
+        /**
+         * @private
+         */
+        _getImgSrc: function(useCacheBuster, cacheBuster, target){
+            var orgSrc = useCacheBuster ? this._removeCacheBuster(target.src, cacheBuster) : target.src;
+            return orgSrc;
         },
         /**
          * @private
@@ -137,21 +149,10 @@
                 srcs = this.getSrcs(),
                 imgs = this.getImgs(),
                 cacheBuster = this.getCacheBuster(),
-                percentage, eData, current, orgSrc;
+                current = e ? e.currentTarget : context, // if ie8 current is context
+                percentage, eData, orgSrc;
 
-            if(e){
-                current = e.currentTarget;
-            }else{
-                // for ie8
-                current = context;
-            }
-
-            if(me.getUseCacheBuster()){
-                orgSrc = this._removeCacheBuster(current.src, cacheBuster);
-            }else{
-                orgSrc = current.src;
-            }
-
+            orgSrc = me._getImgSrc(me.getUseCacheBuster(), cacheBuster, current);
             imgs[orgSrc] = current;
             this.setImgs(imgs);
 

@@ -3,6 +3,7 @@
 
     /**
      * @class Global.app.Router
+     * @extend Global.core.BaseClass
      */
     Global.define('Global.app.Router',{
 
@@ -18,14 +19,30 @@
         routing: {
         },
 
+        /**
+         * controllers
+         * @cfg {Object} cache controller instance
+         */
+        controllers: {
+        },
+
+
+        /**
+         * @method start
+         * start routing.
+         */
         start: function() {
             var pathName = location.pathname,
                 routing  = this.getRouting(),
                 Klass    = this._getController(pathName, routing),
                 instance = Klass ? new Klass() : undefined;
             Klass = instance;
+            this.controllers[pathName] = instance;
         },
 
+        /**
+         * @method
+         */
         _getController: function(path, routing){
             var pattern = /\/$/,
                 hasLastSlash = pattern.test(path) ? path : path + '/',

@@ -1,16 +1,26 @@
 
 'use strict';
 
-describe('Test for app/Controller.js', function () {
+describe('Test for core/ManipulateDomClass.js', function () {
 
-    var Controller = Global.app.Controller,
-        instance = new Controller({$elm: $('<div><div class="main"></div></div>')});
+    var ManipulateDomClass = Global.core.ManipulateDomClass,
+        instance;
 
-    expect(instance.getCacheRef).to.be.a('function');
+    beforeEach(function(){
+        instance = new ManipulateDomClass({$elm: $('<div><div class="main"></div></div>')});
+    });
+
+    afterEach(function(){
+        instance = null;
+    });
+
+    it('class has those public method', function(){
+        expect(instance.getCacheRef).to.be.a('function');
+    });
 
     describe('#getCacheRef', function () {
 
-        it('Class dose not ref cache but create new cache', function () {
+        it('Class dose not have ref cache but create new cache', function () {
             expect(instance.elmCaches.main).to.be(undefined);
             var $elm = instance.getCacheRef('main', '.main');
 

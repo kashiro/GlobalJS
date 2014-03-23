@@ -57,6 +57,13 @@
             this._applyEvents(this.getEvents());
         },
 
+        /**
+         * @method getCacheRef
+         * Return jQuery Object if this class can find element by using key or selector you passed.
+         * @param {String} key element cache key you can set in refs property.
+         * @param {String} (optional) selector to find element.
+         * @param {jQuery|undefined} if Class can get jQuery object return it.
+         */
         getCacheRef: function(key, selector){
             if(!this.$elm){
                 return;
@@ -75,6 +82,12 @@
             return this.elmCaches[key];
         },
 
+        /**
+         * @method set jquery cache in this class
+         * @private
+         * @param {Object} refs refs object
+         * See also {@link #refs}
+         */
         _setElmCaches: function(refs){
             var me = this, key;
             for(key in refs){
@@ -82,6 +95,12 @@
             }
         },
 
+        /**
+         * @method apply event you want suscribe.
+         * @private
+         * @param {Object} events refs object
+         * See also {@link #events}
+         */
         _applyEvents: function(events){
             var me = this,
                 $ref,
