@@ -527,18 +527,37 @@
             this._applyEvents(this.getEvents());
         },
 
+        /**
+         * @method getCacheRef
+         * Return jQuery Object if this class can find element by using key or selector you passed.
+         * @param {String} key element cache key you can set in refs property.
+         * @param {String} (optional) selector to find element.
+         * @param {jQuery|undefined} if Class can get jQuery object return it.
+         */
         getCacheRef: function(key, selector){
             if(!this.$elm){
                 return;
             }
             var cached = this.elmCaches[key],
                 $elm = !cached && selector ? this.$elm.find(selector): undefined;
-            if(!cached && $elm){
+
+            if($elm && $elm.length === 0){
+                $elm = undefined;
+            }
+
+            if(!cached){
                 this.elmCaches[key] = $elm;
             }
+
             return this.elmCaches[key];
         },
 
+        /**
+         * @method set jquery cache in this class
+         * @private
+         * @param {Object} refs refs object
+         * See also {@link #refs}
+         */
         _setElmCaches: function(refs){
             var me = this, key;
             for(key in refs){
@@ -546,6 +565,12 @@
             }
         },
 
+        /**
+         * @method apply event you want suscribe.
+         * @private
+         * @param {Object} events refs object
+         * See also {@link #events}
+         */
         _applyEvents: function(events){
             var me = this,
                 $ref,
@@ -1080,7 +1105,7 @@
         imgs : {},
 
         cacheBuster: null,
-        
+
         useCacheBuster: false,
 
         eventName: {
@@ -1143,18 +1168,13 @@
          * @private
          */
         _prepareImages: function(imgs) {
-            var me = this;
+            var me = this,
+                useCacheBuster = me.getUseCacheBuster();
             Global.core.Array.each(imgs, function(index, obj){
                 obj.img.onload = function(e){
                     me._onLoad(e, this);
                 };
-                
-                if(me.getUseCacheBuster()){
-                    obj.img.src = obj.cacheBusterSrc;  
-                }else{
-                    obj.img.src = obj.src;
-                }
-
+                obj = me._addImgSrc(useCacheBuster, obj);
                 // for cached
                 if(obj.img.complete){
                     me._onLoad({currentTarget: obj.img}, this);
@@ -1164,10 +1184,20 @@
         /**
          * @private
          */
+        _addImgSrc: function(useCacheBuster, obj){
+            obj.img.src = useCacheBuster ? obj.cacheBusterSrc : obj.src;
+            return obj;
+        },
+        /**
+         * @private
+         */
         _addCacheBuster: function(url, cacheBuster){
             var cache = url.indexOf('?') !== -1 ? '&' + cacheBuster : '?' + cacheBuster;
             return url + cache;
         },
+        /**
+         * @private
+         */
         _removeCacheBuster: function(url, cacheBuster){
             var targetIndex = url.indexOf(cacheBuster) -1;
             return url.slice(0, targetIndex);
@@ -1175,25 +1205,22 @@
         /**
          * @private
          */
+        _getImgSrc: function(useCacheBuster, cacheBuster, target){
+            var orgSrc = useCacheBuster ? this._removeCacheBuster(target.src, cacheBuster) : target.src;
+            return orgSrc;
+        },
+        /**
+         * @private
+         */
         _onLoad: function(e, context){
-            var srcs = this.getSrcs(),
+            var me = this,
+                srcs = this.getSrcs(),
                 imgs = this.getImgs(),
                 cacheBuster = this.getCacheBuster(),
-                percentage, eData, current, orgSrc;
+                current = e ? e.currentTarget : context, // if ie8 current is context
+                percentage, eData, orgSrc;
 
-            if(e){
-                current = e.currentTarget;
-            }else{
-                // for ie8
-                current = context;
-            }
-
-            if(me.getUseCacheBuster()){
-                orgSrc = this._removeCacheBuster(current.src, cacheBuster);
-            }else{
-                orgSrc = current.src;
-            }
-            
+            orgSrc = me._getImgSrc(me.getUseCacheBuster(), cacheBuster, current);
             imgs[orgSrc] = current;
             this.setImgs(imgs);
 
@@ -1253,6 +1280,8 @@
 
         targetSelector: null,
 
+        loopCount: null,
+
         $elm: null,
 
         count: 0,
@@ -1268,11 +1297,21 @@
         },
 
         execute: function(){
-            var me = this;
+            var me = this,
+                loopCount = this.getLoopCount();
             me.intervalId = setInterval(function(){
                 if(me.getSingleRun() && (me.count >= me.classList.length -2)){
                     window.clearInterval(me.intervalId);
                     me.dispatchEvent(me.eventName.end);
+                    return;
+                }
+                if(Global.isNumber(loopCount)){
+                    --loopCount;
+                    if(loopCount === 0){
+                        window.clearInterval(me.intervalId);
+                        me.dispatchEvent(me.eventName.end);
+                        return;
+                    }
                 }
                 me.doSprite(me.count);
             }, me.interval);
@@ -1581,9 +1620,8 @@
                 me.hide();
             });
         },
-        
+
         _bindMaskClickNone: function($mask){
-            var me = this;
             $mask.on('click', function(e){
                 e.preventDefault();
                 e.stopPropagation();
@@ -1651,6 +1689,7 @@
 
     /**
      * @class Global.app.Router
+     * @extend Global.core.BaseClass
      */
     Global.define('Global.app.Router',{
 
@@ -1666,14 +1705,30 @@
         routing: {
         },
 
+        /**
+         * controllers
+         * @cfg {Object} cache controller instance
+         */
+        controllers: {
+        },
+
+
+        /**
+         * @method start
+         * start routing.
+         */
         start: function() {
             var pathName = location.pathname,
                 routing  = this.getRouting(),
                 Klass    = this._getController(pathName, routing),
                 instance = Klass ? new Klass() : undefined;
             Klass = instance;
+            this.controllers[pathName] = instance;
         },
 
+        /**
+         * @method
+         */
         _getController: function(path, routing){
             var pattern = /\/$/,
                 hasLastSlash = pattern.test(path) ? path : path + '/',
