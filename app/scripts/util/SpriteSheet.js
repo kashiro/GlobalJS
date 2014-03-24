@@ -21,6 +21,8 @@
 
         targetSelector: null,
 
+        loopCount: null,
+
         $elm: null,
 
         count: 0,
@@ -36,11 +38,21 @@
         },
 
         execute: function(){
-            var me = this;
+            var me = this,
+                loopCount = this.getLoopCount();
             me.intervalId = setInterval(function(){
                 if(me.getSingleRun() && (me.count >= me.classList.length -2)){
                     window.clearInterval(me.intervalId);
                     me.dispatchEvent(me.eventName.end);
+                    return;
+                }
+                if(Global.isNumber(loopCount)){
+                    --loopCount;
+                    if(loopCount === 0){
+                        window.clearInterval(me.intervalId);
+                        me.dispatchEvent(me.eventName.end);
+                        return;
+                    }
                 }
                 me.doSprite(me.count);
             }, me.interval);
