@@ -1273,20 +1273,19 @@
         interval : 500,
 
         eventName: {
-            end: 'end'
+            end: 'end',
+            change: 'change'
         },
-
-        singleRun: false,
 
         targetSelector: null,
 
-        loopCount: null,
-
         $elm: null,
 
-        count: 0,
+        totalCount: 0,
 
-        isFirst: true,
+        limit: null,
+
+        count: 0,
 
         intervalId: null,
 
@@ -1297,23 +1296,16 @@
         },
 
         execute: function(){
-            var me = this,
-                loopCount = this.getLoopCount();
+            var me = this;
             me.intervalId = setInterval(function(){
-                if(me.getSingleRun() && (me.count >= me.classList.length -2)){
-                    window.clearInterval(me.intervalId);
-                    me.dispatchEvent(me.eventName.end);
-                    return;
-                }
-                if(Global.isNumber(loopCount)){
-                    --loopCount;
-                    if(loopCount === 0){
-                        window.clearInterval(me.intervalId);
-                        me.dispatchEvent(me.eventName.end);
-                        return;
-                    }
-                }
                 me.doSprite(me.count);
+                me.countUp(me.count);
+                me.dispatchEvent(me.getEventName().change, me.getTotalCount());
+                if(Global.isNumber(me.getLimit()) && me.getTotalCount() === me.getLimit()){
+                    window.clearInterval(me.intervalId);
+                    me.setTotalCount(0);
+                    me.dispatchEvent(me.getEventName().end);
+                }
             }, me.interval);
         },
 
@@ -1322,28 +1314,19 @@
                 cls = me.getClass(count);
             me.$elm.removeClass(cls.current);
             me.$elm.addClass(cls.next);
-            me.countUp(count);
         },
 
         countUp: function(count){
-            if(!this.getSingleRun() && count === this.classList.length - 1){
-                count = 0;
-            }else{
-                if(this.isFirst){
-                    this.isFirst = false;
-                    return;
-                }else{
-                    count += 1;
-                }
-            }
-            this.count = count;
-
+            this.count = (1+count) % this.classList.length;
+            this.totalCount = ++this.totalCount;
         },
 
         getClass: function(count){
             var me = this,
-                current = me.isFirst ? '' : me.classList[count],
-                next    = me.isFirst ? me.classList[count] : me.classList[count + 1];
+                nextIndex = count+1,
+                _nextIndex = nextIndex === this.classList.length ? 0 : nextIndex,
+                current = me.classList[count],
+                next    = me.classList[_nextIndex];
             return {
                 current: current,
                 next   : next
