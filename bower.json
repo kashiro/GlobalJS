@@ -1,9 +1,12 @@
 {
   "name": "GlobalJS",
-  "private": true,
+  "version": "0.0.2",
+  "authors": [
+    "Tomoyuki Kashiro"
+  ],
+  "license": "MIT",
   "dependencies": {
-    "jquery": "~1.10.2",
-    "jquery-upload-file": "hayageek/jquery-upload-file"
+    "jquery": "~1.10.2"
   },
   "devDependencies": {}
 }
