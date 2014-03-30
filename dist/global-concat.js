@@ -1560,6 +1560,9 @@
             }
 
             this._create(tplData);
+            this._setElmCaches(this.getRefs());
+            this._applyEvents(this.getEvents());
+            
             $elm = this.$elm;
             $mask = this.$mask;
             $body = $(document.body);
