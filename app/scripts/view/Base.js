@@ -4,7 +4,7 @@
     /**
      * @class Global.view.Base
      * base class of view.
-     * @extend Global.view.Base
+     * @extend Global.core.ManipulateDomClass,
      */
     Global.define('Global.view.Base',{
 

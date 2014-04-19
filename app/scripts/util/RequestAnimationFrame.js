@@ -4,7 +4,7 @@
     /**
      * @class Global.util.RequestAnimationFramae
      * @extends Global.core.BaseClass
-     * @singletone
+     * @singleton
      */
     Global.define('Global.util.RequestAnimationFrame', {
 

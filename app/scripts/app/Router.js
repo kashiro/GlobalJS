@@ -3,6 +3,7 @@
 
     /**
      * @class Global.app.Router
+     * Routing logic according to url pathname
      * @extend Global.core.BaseClass
      */
     Global.define('Global.app.Router',{
@@ -29,28 +30,39 @@
 
         /**
          * @method start
+         * make controller instance according to current pathname
          * start routing.
          */
         start: function() {
             var pathName = location.pathname,
                 routing  = this.getRouting(),
                 Klass    = this._getController(pathName, routing),
-                instance = Klass ? new Klass() : undefined;
-            Klass = instance;
-            this.controllers[pathName] = instance;
+                instance = Klass ? new Klass() : undefined,
+                key = this._getNoLastSlashPath(pathName);
+            this.controllers[key] = instance;
         },
 
         /**
          * @method
+         * @private
          */
         _getController: function(path, routing){
             var pattern = /\/$/,
                 hasLastSlash = pattern.test(path) ? path : path + '/',
-                noLastSlash  = pattern.test(path) ? path.slice(0, -1) : path,
+                noLastSlash  = this._getNoLastSlashPath(path),
                 hasLastSlashClass = routing[hasLastSlash],
                 noLastSlashClass = routing[noLastSlash];
 
             return hasLastSlashClass ? hasLastSlashClass : noLastSlashClass;
+        },
+
+        /**
+         * @method
+         * @private
+         */
+        _getNoLastSlashPath: function(path){
+            var reg = /\/$/;
+            return reg.test(path) ? path.slice(0, -1) : path;
         }
 
     });

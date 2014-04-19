@@ -2,9 +2,12 @@
     'use strict';
     /**
      * @class Global.core.ManipulateDomClass
+     * @alternateClassName Global.ObservableClass
      * @extends Global.core.ObservableClass
      */
     Global.define('Global.core.ManipulateDomClass',{
+
+        alias: 'Global.ObservableClass',
 
         extend: Global.core.ObservableClass,
 
