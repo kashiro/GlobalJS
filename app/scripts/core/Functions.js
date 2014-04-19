@@ -52,7 +52,7 @@
             var ary;
             return function(){
                 ary = Global.core.Array.args2Array(arguments);
-                if(Global.core.Array.isArray(args)){
+                if(Global.isArray(args)){
                     ary = ary.concat(args);
                 }
                 callback.apply(context, ary);

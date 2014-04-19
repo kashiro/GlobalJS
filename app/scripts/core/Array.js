@@ -16,19 +16,6 @@
         singleton: true,
 
         /**
-         * @method isArray
-         * Returns true if an object is an array, false if it is not.
-         * @param {Object} object The object to be checked.
-         * @return {Boolean} true if an object is an array.
-         *
-         *     // return true.
-         *     Global.core.Array.isArray([]);
-         */
-        isArray: function(target){
-            return target instanceof Array;
-        },
-
-        /**
          * @method args2Array
          * Returns array which arguments is convert to.
          * @param {Object} arguments arguments.

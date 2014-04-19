@@ -117,6 +117,11 @@
          * @param {Object} obj target object
          * @return {Boolean} whether target is Date or not
          */
+         /**
+         * @method isArray
+         * @param {Object} obj target object
+         * @return {Boolean} whether target is Array or not
+         */
         _makeWhetherFun: function(){
             var me = this,
                 list = ['Function', 'String', 'Number', 'Date', 'Array'];
