@@ -12,7 +12,6 @@
         isRequesting: false,
 
         init: function(config) {
-            this.listeners = {};
             this._super(config);
         },
 

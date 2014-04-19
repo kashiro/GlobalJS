@@ -60,7 +60,6 @@
          * @constructor
          */
         init: function(config){
-            this.listeners = {};
             this.$elm = $(config.targetSelector);
             this._super(config);
         },

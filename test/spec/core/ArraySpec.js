@@ -5,22 +5,12 @@ describe('Test for core/Array.js', function () {
     var G = Global.core;
 
     it('core/Array has public methods', function () {
-        expect(G.Array.isArray).to.be.a('function');
         expect(G.Array.args2Array).to.be.a('function');
         expect(G.Array.each).to.be.a('function');
     });
 
     it('core/Array is registed alias name space', function () {
         expect(Global.Array).to.eql(G.Array);
-    });
-
-    describe('#isArray', function () {
-        it('if you set Array it would be returned true', function () {
-            expect(G.Array.isArray([])).to.be.ok();
-        });
-        it('if you set no Array it would be returned false', function () {
-            expect(G.Array.isArray(undefined)).not.to.be.ok();
-        });
     });
 
     describe('#args2Array', function () {

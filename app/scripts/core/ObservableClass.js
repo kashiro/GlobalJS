@@ -10,6 +10,11 @@
 
         alias: 'Global.ObservableClass',
 
-        extend: Global.event.EventDispatcher
+        extend: Global.event.EventDispatcher,
+
+        init: function(config){
+            this.listeners = {};
+            this._super(config);
+        }
     });
 })();

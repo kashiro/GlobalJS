@@ -27,7 +27,6 @@
         data: null,
 
         init: function(config){
-            this.listeners = {};
             this._super(config);
             this.proxy = new this.proxy();
         },
