@@ -15,124 +15,120 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">
-&#39;use strict&#39;;
+  <pre class="prettyprint lang-js">(function(){
+    &#39;use strict&#39;;
 
-<span id='Global-core-Array'>/**
-</span> * @class Global.core.Array
- * Wrapper class for Array
- * @extends Global.core.BaseClass
- * @alternateClassName Global.Arra
- * @singleton
- *
- */
-Global.define(&#39;Global.core.Array&#39;,{
-
-    alias: &#39;Global.Array&#39;,
-
-    singleton: true,
-
-<span id='Global-core-Array-method-isArray'>    /**
-</span>     * @method isArray
-     * Returns true if an object is an array, false if it is not.
-     * @param {Object} object The object to be checked.
-     * @return {Boolean} true if an object is an array.
-     *
-     *     // return true.
-     *     Global.core.Array.isArray([]);
-     */
-    isArray: function(target){
-        return target instanceof Array;
-    },
-
-<span id='Global-core-Array-method-args2Array'>    /**
-</span>     * @method args2Array
-     * Returns array which arguments is convert to.
-     * @param {Object} arguments arguments.
-     * @return {Array} converted array object.
-     *
-     *     // return Array object.
-     *     function awesomeFunc(){
-     *         var ary = Global.core.Array.args2Array(arguments);
-     *     }
+<span id='Global-core-Array'>    /**
+</span>     * @class Global.core.Array
+     * Wrapper class for Array
+     * @extends Global.core.BaseClass
+     * @alternateClassName Global.Arra
+     * @singleton
      *
      */
-    args2Array: function(args){
-        if(args instanceof Array){
-            return args;
-        }else{
-            return Array.prototype.slice.call(args);
-        }
-    },
+    Global.define(&#39;Global.core.Array&#39;,{
 
-<span id='Global-core-Array-method-map2Array'>    /**
-</span>     * @method map2Array
-     * Returns array which map{key:value} is convert to.
-     * @param {Object} map The map to be converted.
-     * @return {Array} converted array object.
-     *
-     *     var map = {
-     *         hoge: &#39;hoge&#39;,
-     *         fuga: &#39;fuga&#39;,
-     *         piyo: &#39;piyo&#39;
-     *     },
-     *     list = Global.core.Array.map2Array(map);
-     *
-     *     console.log(list); // [&#39;hoge&#39;, &#39;fuga&#39;, &#39;piyo&#39;];
-     *
-     */
-    map2Array: function(map) {
-        var list = [],
-            key;
-        for(key in map){
-            list.push(map[key]);
-        }
-        return list;
-    },
+        alias: &#39;Global.Array&#39;,
 
-<span id='Global-core-Array-method-each'>    /**
-</span>     * @method each
-     * Iterates an array.
-     * @param {Object} map The map to be converted.
-     *
-     *     var list = [&#39;hoge&#39;, &#39;fuga&#39;, &#39;piyo&#39;];
-     *
-     *     Global.core.Array.each(list, function(index, value){
-     *         console.log(index); // 0, 1, 2
-     *         console.log(value); // &#39;hoge&#39;, &#39;fuga&#39;, &#39;piyo&#39;
-     *     });
-     *
-     */
-    each: function(list, callback){
-        var l = list.length,
-            i = 0;
-        for(; i &lt; l; i++){
-            callback(i, list[i]);
-        }
-    },
+        singleton: true,
 
-<span id='Global-core-Array-method-contains'>    /**
-</span>     * @method contains
-     * Checks whether or not the given array contains the specified item.
-     * @param {Boolean} return true when the given array contains the specified item.
-     *
-     *     var list = [&#39;hoge&#39;, &#39;fuga&#39;, &#39;piyo&#39;];
-     *
-     *     // return true.
-     *     console.log(Global.core.Array.contains(list, &#39;fuga&#39;));
-     */
-    contains: function(list, target) {
-        var i = 0,
-            l = list.length;
-        for(; i &lt; l; i++){
-            if(list[i] === target){
-                return true;
+<span id='Global-core-Array-method-args2Array'>        /**
+</span>         * @method args2Array
+         * Returns array which arguments is convert to.
+         * @param {Object} arguments arguments.
+         * @return {Array} converted array object.
+         *
+         *     // return Array object.
+         *     function awesomeFunc(){
+         *         var ary = Global.core.Array.args2Array(arguments);
+         *     }
+         *
+         */
+        args2Array: function(args){
+            if(args instanceof Array){
+                return args;
+            }else{
+                return Array.prototype.slice.call(args);
             }
-        }
-        return false;
-    }
+        },
 
-});
+<span id='Global-core-Array-method-map2Array'>        /**
+</span>         * @method map2Array
+         * Returns array which map{key:value} is convert to.
+         * @param {Object} map The map to be converted.
+         * @return {Array} converted array object.
+         *
+         *     var map = {
+         *         hoge: &#39;hoge&#39;,
+         *         fuga: &#39;fuga&#39;,
+         *         piyo: &#39;piyo&#39;
+         *     },
+         *     list = Global.core.Array.map2Array(map);
+         *
+         *     console.log(list); // [&#39;hoge&#39;, &#39;fuga&#39;, &#39;piyo&#39;];
+         *
+         */
+        map2Array: function(map) {
+            var list = [],
+                key;
+            for(key in map){
+                list.push(map[key]);
+            }
+            return list;
+        },
+
+<span id='Global-core-Array-method-each'>        /**
+</span>         * @method each
+         * Iterates an array.
+         * @param {Object} map The map to be converted.
+         *
+         *     var list = [&#39;hoge&#39;, &#39;fuga&#39;, &#39;piyo&#39;];
+         *
+         *     Global.core.Array.each(list, function(index, value){
+         *         console.log(index); // 0, 1, 2
+         *         console.log(value); // &#39;hoge&#39;, &#39;fuga&#39;, &#39;piyo&#39;
+         *     });
+         *
+         */
+        each: function(list, callback){
+            var l = list.length,
+                i = 0;
+            for(; i &lt; l; i++){
+                callback(i, list[i]);
+            }
+        },
+
+<span id='Global-core-Array-method-contains'>        /**
+</span>         * @method contains
+         * Checks whether or not the given array contains the specified item.
+         * @param {Boolean} return true when the given array contains the specified item.
+         *
+         *     var list = [&#39;hoge&#39;, &#39;fuga&#39;, &#39;piyo&#39;];
+         *
+         *     // return true.
+         *     console.log(Global.core.Array.contains(list, &#39;fuga&#39;));
+         */
+        contains: function(list, target) {
+            var i = 0,
+                l = list.length;
+            for(; i &lt; l; i++){
+                if(list[i] === target){
+                    return true;
+                }
+            }
+            return false;
+        },
+
+<span id='Global-core-Array-method-remove'>        /**
+</span>         * @method remove
+         */
+        remove: function(target, index, count){
+            var _count = count || 1;
+            target.splice(index, _count);
+        }
+
+    });
+})();
 </pre>
 </body>
 </html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function(){
+    &#39;use strict&#39;;
+<span id='Global-core-ManipulateDomClass'>    /**
+</span>     * @class Global.core.ManipulateDomClass
+     * @alternateClassName Global.ObservableClass
+     * @extends Global.core.ObservableClass
+     */
+    Global.define(&#39;Global.core.ManipulateDomClass&#39;,{
+
+        alias: &#39;Global.ObservableClass&#39;,
+
+        extend: Global.core.ObservableClass,
+
+<span id='Global-core-ManipulateDomClass-cfg-refs'>        /**
+</span>         * @cfg {Object} refs name and selector
+         *
+         *     refs: {
+         *         main: &#39;.main-panel&#39;
+         *     }
+         *
+         */
+        refs: {},
+
+<span id='Global-core-ManipulateDomClass-cfg-event'>        /**
+</span>         * @cfg {Object} event dispatch settings
+         *
+         * You can set refs names or selectors into each events key.
+         *
+         *     events: {
+         *         main: {
+         *             click: &#39;_onClickMain&#39;
+         *         },
+         *         &#39;.sub&#39;: {
+         *             click: &#39;_onClickSub&#39;
+         *         }
+         *     },
+         *
+         * You can also set more options into event settings.
+         *
+         *     events: {
+         *         sub: {
+         *             click: {
+         *                 delegate: &#39;.delegate-selector&#39;,
+         *                 handler : &#39;_onClickSub&#39;
+         *             }
+         *         }
+         *     }
+         */
+        events: {},
+
+        $elm: null,
+
+        init: function(config){
+            this.listeners = {};
+            this.elmCaches = {};
+            this._super(config);
+
+            this._setElmCaches(this.getRefs());
+
+            this._applyEvents(this.getEvents());
+        },
+
+<span id='Global-core-ManipulateDomClass-method-getCacheRef'>        /**
+</span>         * @method getCacheRef
+         * Return jQuery Object if this class can find element by using key or selector you passed.
+         * @param {String} key element cache key you can set in refs property.
+         * @param {String} (optional) selector to find element.
+         * @param {jQuery|undefined} if Class can get jQuery object return it.
+         */
+        getCacheRef: function(key, selector){
+            if(!this.$elm){
+                return;
+            }
+            var cached = this.elmCaches[key],
+                $elm = !cached &amp;&amp; selector ? this.$elm.find(selector): undefined;
+
+            if($elm &amp;&amp; $elm.length === 0){
+                $elm = undefined;
+            }
+
+            if(!cached){
+                this.elmCaches[key] = $elm;
+            }
+
+            return this.elmCaches[key];
+        },
+
+<span id='Global-core-ManipulateDomClass-method-set'>        /**
+</span>         * @method set jquery cache in this class
+         * @private
+         * @param {Object} refs refs object
+         * See also {@link #refs}
+         */
+        _setElmCaches: function(refs){
+            var me = this, key;
+            for(key in refs){
+                me.getCacheRef(key, refs[key]);
+            }
+        },
+
+<span id='Global-core-ManipulateDomClass-method-apply'>        /**
+</span>         * @method apply event you want suscribe.
+         * @private
+         * @param {Object} events refs object
+         * See also {@link #events}
+         */
+        _applyEvents: function(events){
+            var me = this,
+                $ref,
+                eName,
+                param;
+
+            $.each(events, function(refsKey, val){
+                $ref = me.getCacheRef(refsKey);
+                if(!$ref){
+                    return false;
+                }
+                eName = Global.keys(val)[0];
+                param = val[eName];
+
+                if(Global.isObject(param) &amp;&amp; param.delegate){
+                    $ref.on(eName, param.delegate, $.proxy(me[param.handler], me));
+                }else if(Global.isString(param)){
+                    $ref.on(eName, $.proxy(me[param], me));
+                }
+
+            });
+        }
+
+    });
+})();
+</pre>
+</body>
+</html>

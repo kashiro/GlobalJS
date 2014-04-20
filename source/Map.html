@@ -15,32 +15,32 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">
-&#39;use strict&#39;;
-<span id=''>/**
-</span> * @class
- * class for manipulate Map(key, value) data
- */
-Global.define(&#39;Global.data.Map&#39;,{
-
-    singleton: true,
-
-<span id='-method-list2Map'>    /**
-</span>     * @private list2Map
-     * convert list to Map
-     * @param  {Array} data to be converted
-     * @param  {String} key object key
-     * @return {Array}      converted object
+  <pre class="prettyprint lang-js">(function(){
+    &#39;use strict&#39;;
+<span id=''>    /**
+</span>     * @class
+     * class for manipulate Map(key, value) data
      */
-    list2Map: function(data, key) {
-        var map = {};
-        $.each(data, function(index, obj){
-            map[obj[key]] = obj;
-        });
-        return map;
-    },
+    Global.define(&#39;Global.data.Map&#39;,{
 
-});
+        singleton: true,
+
+<span id='-method-list2Map'>        /**
+</span>         * @private list2Map
+         * convert list to Map
+         * @param  {Array} data to be converted
+         * @param  {String} key object key
+         * @return {Array}      converted object
+         */
+        list2Map: function(data, key) {
+            var map = {};
+            $.each(data, function(index, obj){
+                map[obj[key]] = obj;
+            });
+            return map;
+        },
+    });
+})();
 </pre>
 </body>
 </html>

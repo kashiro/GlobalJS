@@ -15,27 +15,28 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">
-&#39;use strict&#39;;
+  <pre class="prettyprint lang-js">(function(){
+    &#39;use strict&#39;;
 
-<span id='Global-event-Event'>/**
-</span> * @class Global.event.Event
- * event object
- * @extends Global.core.BaseClass
- */
-Global.define(&#39;Global.event.Event&#39;,{
-
-<span id='Global-event-Event-method-init'>    /**
-</span>     * @method init
-     * @constructor
+<span id='Global-event-Event'>    /**
+</span>     * @class Global.event.Event
+     * event object
+     * @extends Global.core.BaseClass
      */
-    init: function(config) {
-        this._super(config);
-        this.target = config.target;
-        this.type = config.type;
-        this.data = config.data;
-    }
-});
+    Global.define(&#39;Global.event.Event&#39;,{
+
+<span id='Global-event-Event-method-init'>        /**
+</span>         * @method init
+         * @constructor
+         */
+        init: function(config) {
+            this._super(config);
+            this.target = config.target;
+            this.type = config.type;
+            this.data = config.data;
+        }
+    });
+})();
 </pre>
 </body>
 </html>

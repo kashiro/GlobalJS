@@ -73,6 +73,81 @@
             }
         },
 
+<span id='Global-method-keys'>        /**
+</span>         * @method keys
+         * get object keys
+         * @param {Object} obj targe object
+         * @return {String[]} array of object keys
+         */
+        keys: function(obj){
+            var isObject = Global.isObject(obj),
+                hasObjectKeys = Object.keys,
+                res = [],
+                key;
+            if(!isObject){
+                res = [];
+            }
+            if(hasObjectKeys){
+                res = Object.keys(obj);
+            }else{
+                for(key in obj){
+                    if(obj.hasOwnProperty(key)){
+                        res.push(key);
+                    }
+                }
+            }
+            return res;
+        },
+<span id='Global-method-isObject'>        /**
+</span>         * @method isObject
+         * @param {Object} obj target object
+         * @return {Boolean} whether target is Object or not
+         */
+        isObject: function(obj){
+            return obj === Object(obj);
+        },
+<span id='Global-method-isUndefined'>        /**
+</span>         * @method isUndefined
+         * @param {Object} obj target object
+         * @return {Boolean} whether target is undefined or not
+         */
+        isUndefined: function(obj){
+            return obj === void 0;
+        },
+<span id='Global-method-isFunction'>        /**
+</span>         * @method isFunction
+         * @param {Object} obj target object
+         * @return {Boolean} whether target is Function or not
+         */
+<span id='Global-method-isString'>        /**
+</span>         * @method isString
+         * @param {Object} obj target object
+         * @return {Boolean} whether target is String or not
+         */
+<span id='Global-method-isNumber'>        /**
+</span>         * @method isNumber
+         * @param {Object} obj target object
+         * @return {Boolean} whether target is Number or not
+         */
+<span id='Global-method-isDate'>        /**
+</span>         * @method isDate
+         * @param {Object} obj target object
+         * @return {Boolean} whether target is Date or not
+         */
+<span id='Global-method-isArray'>         /**
+</span>         * @method isArray
+         * @param {Object} obj target object
+         * @return {Boolean} whether target is Array or not
+         */
+        _makeWhetherFun: function(){
+            var me = this,
+                list = [&#39;Function&#39;, &#39;String&#39;, &#39;Number&#39;, &#39;Date&#39;, &#39;Array&#39;];
+            $.each(list, function(index, name){
+                me[&#39;is&#39; + name] = function(obj){
+                    return Object.prototype.toString.call(obj) === &#39;[object &#39; + name + &#39;]&#39;;
+                };
+            });
+        },
 <span id='Global-method-_getRegistedClass'>        /**
 </span>         * @method _getRegistedClass
          * @private
@@ -97,9 +172,9 @@
          */
         _getModule: function(definition){
             var module, parent;
-            if(_.isUndefined(definition.extend)){
+            if(this.isUndefined(definition.extend)){
                 parent = Global.core.BaseClass;
-            }else if(_.isFunction(definition.extend)){
+            }else if(this.isFunction(definition.extend)){
                 parent = definition.extend;
             }else{
                 console.error(&#39;you should set sub class of lib/Class.js&#39;);
@@ -142,7 +217,7 @@
                 key;
             for(key in definition){
                 tmpProp = definition[key];
-                if(!_.isFunction(tmpProp) &amp;&amp; definition.hasOwnProperty(key)){
+                if(!this.isFunction(tmpProp) &amp;&amp; definition.hasOwnProperty(key)){
                     newPropName = this._conbineUpperStr(&#39;get&#39;, key);
                     definition[newPropName] = this._getGetSetFunc(&#39;get&#39;, definition, key);
                     newPropName = this._conbineUpperStr(&#39;set&#39;, key);
@@ -179,14 +254,13 @@
             }
             return func;
         }
-
     };
 
     /*--------------------------------
     * private
     --------------------------------*/
     Global.regist(&#39;Global&#39;, Global);
-
+    Global._makeWhetherFun();
 }(window));
 </pre>
 </body>

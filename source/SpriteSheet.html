@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function(){
+    &#39;use strict&#39;;
+<span id='Global-util-SpriteSheet'>    /**
+</span>     * @class Global.util.SpriteSheet
+     * iterate css class at specific interval
+     * @extends Global.core.ObservableClass,
+     */
+    Global.define(&#39;Global.util.SpriteSheet&#39;,{
+
+        extend : Global.core.ObservableClass,
+
+<span id='Global-util-SpriteSheet-cfg-class'>        /**
+</span>         * @cfg {Array} class list to replace css class
+         */
+        classList: [],
+
+<span id='Global-util-SpriteSheet-cfg-interval'>        /**
+</span>         * @cfg {Number} interval msec to do sprite
+         */
+        interval : 500,
+
+<span id='Global-util-SpriteSheet-cfg-name'>        /**
+</span>         * @cfg {String} name of event
+         */
+        eventName: {
+            /* @event Fired sprite is finished*/
+            end: &#39;end&#39;,
+            /* @event Fired sprite is executed*/
+            change: &#39;change&#39;
+        },
+
+<span id='Global-util-SpriteSheet-cfg-selector'>        /**
+</span>         * @cfg {String} selector of target element
+         */
+        targetSelector: null,
+
+<span id='Global-util-SpriteSheet-cfg-target'>        /**
+</span>         * @cfg {Object} target jQuery element
+         */
+        $elm: null,
+
+<span id='Global-util-SpriteSheet-cfg-total'>        /**
+</span>         * @cfg {Number} total count of sprite
+         */
+        totalCount: 0,
+
+<span id='Global-util-SpriteSheet-cfg-limit'>        /**
+</span>         * @cfg {Number} limit of sprite
+         */
+        limit: null,
+
+        count: 0,
+
+<span id='Global-util-SpriteSheet-cfg-interval'>        /**
+</span>         * @cfg {Number} interval id to use cancel interval
+         */
+        intervalId: null,
+
+<span id='Global-util-SpriteSheet-method-constructor'>        /**
+</span>         * @constructor
+         */
+        init: function(config){
+            this.$elm = $(config.targetSelector);
+            this._super(config);
+        },
+
+<span id='Global-util-SpriteSheet-method-execute'>        /**
+</span>         * @method execute sprite
+         */
+        execute: function(){
+            var me = this;
+            me.intervalId = setInterval(function(){
+                me._doSprite(me.count);
+                me._countUp(me.count);
+                me.dispatchEvent(me.getEventName().change, me.getTotalCount());
+                if(Global.isNumber(me.getLimit()) &amp;&amp; me.getTotalCount() === me.getLimit()){
+                    window.clearInterval(me.intervalId);
+                    me.setTotalCount(0);
+                    me.dispatchEvent(me.getEventName().end);
+                }
+            }, me.interval);
+        },
+
+<span id='Global-util-SpriteSheet-method-_doSprite'>        /**
+</span>         * @private
+         */
+        _doSprite: function(count){
+            var me = this,
+                cls = me._getClass(count);
+            me.$elm.removeClass(cls.current);
+            me.$elm.addClass(cls.next);
+        },
+
+<span id='Global-util-SpriteSheet-method-_countUp'>        /**
+</span>         * @private
+         */
+        _countUp: function(count){
+            this.count = (1+count) % (this.classList.length + 1);
+            this.totalCount = ++this.totalCount;
+        },
+
+<span id='Global-util-SpriteSheet-method-_getClass'>        /**
+</span>         * @private
+         */
+        _getClass: function(count){
+            var me = this,
+                nextIndex = (1 + count) % this.classList.length,
+                current = me.classList[count],
+                next    = me.classList[nextIndex];
+            return {
+                current: current,
+                next   : next
+            };
+        }
+    });
+})();
+</pre>
+</body>
+</html>

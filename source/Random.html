@@ -15,47 +15,47 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">
-&#39;use strict&#39;;
+  <pre class="prettyprint lang-js">(function(){
+    &#39;use strict&#39;;
 
-<span id='Global-math-Random'>/**
-</span> * @class Global.math.Random
- * utility for get random numbers.
- * @extends Global.core.BaseClass
- * @singleton
- */
-Global.define(&#39;Global.math.Random&#39;,{
-
-    singleton: true,
-
-<span id='Global-math-Random-method-getRandomNum'>    /**
-</span>     * return random number.
-     * @param  {Number} max max number you want to get.
-     * @return {Number} random number which smaller than number you passed.
+<span id='Global-math-Random'>    /**
+</span>     * @class Global.math.Random
+     * utility for get random numbers.
+     * @extends Global.core.BaseClass
+     * @singleton
      */
-    getRandomNum: function(max) {
-        return Math.floor( Math.random() * max + 1 );
-    },
+    Global.define(&#39;Global.math.Random&#39;,{
 
-<span id='Global-math-Random-method-getRandomNumList'>    /**
-</span>     * return random number list.
-     * @param  {Number} max max number you want to get.
-     * @return {Array} random number list.
-     */
-    getRandomNumList: function(num) {
-        var i, j, tmp, random = new Array(num);
-        random[0] = 0;
+        singleton: true,
 
-        for(i = num - 1; i &gt; 0; i--){
-            j = Math.floor(Math.random() * (i+1));
-            tmp = random[i] || i;
-            random[i] = random[j] || j;
-            random[j] = tmp;
+<span id='Global-math-Random-method-getRandomNum'>        /**
+</span>         * return random number.
+         * @param  {Number} max max number you want to get.
+         * @return {Number} random number which smaller than number you passed.
+         */
+        getRandomNum: function(max) {
+            return Math.floor( Math.random() * max + 1 );
+        },
+
+<span id='Global-math-Random-method-getRandomNumList'>        /**
+</span>         * return random number list.
+         * @param  {Number} max max number you want to get.
+         * @return {Array} random number list.
+         */
+        getRandomNumList: function(num) {
+            var i, j, tmp, random = new Array(num);
+            random[0] = 0;
+
+            for(i = num - 1; i &gt; 0; i--){
+                j = Math.floor(Math.random() * (i+1));
+                tmp = random[i] || i;
+                random[i] = random[j] || j;
+                random[j] = tmp;
+            }
+            return random;
         }
-        return random;
-    }
-
-});
+    });
+})();
 </pre>
 </body>
 </html>

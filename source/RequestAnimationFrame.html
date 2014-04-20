@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function(){
+    &#39;use strict&#39;;
+
+<span id='Global-util-RequestAnimationFramae'>    /**
+</span>     * @class Global.util.RequestAnimationFramae
+     * @extends Global.core.BaseClass
+     * @singleton
+     */
+    Global.define(&#39;Global.util.RequestAnimationFrame&#39;, {
+
+        singleton: true,
+
+        init: function(config){
+            this.polyfill();
+            this._super(config);
+        },
+
+        start: function(callback){
+            return this.raf.apply(window, [callback]);
+        },
+        cancel: function(id){
+            return this.caf(id);
+        },
+
+        polyfill: function(){
+            var win = window,
+                raf = win.requestAnimationFrame ||
+                      win.webkitRequestAnimationFrame ||
+                      win.mozRequestAnimationFrame ||
+                      win.msRequestAnimationFrame ||
+                      win.oRequestAnimationFrame ||
+                      function(func) { setTimeout(func, 1000 / 60); },
+                caf = win.cancelAnimationFrame ||
+                      win.cancelRequestAnimationFrame ||
+                      win.webkitCancelAnimationFrame ||
+                      win.webkitCancelRequestAnimationFrame ||
+                      win.mozCancelAnimationFrame ||
+                      win.mozCancelRequestAnimationFrame ||
+                      win.msCancelAnimationFrame ||
+                      win.msCancelRequestAnimationFrame ||
+                      win.oCancelAnimationFrame ||
+                      win.oCancelRequestAnimationFrame ||
+                      function(id) { clearTimeout(id); };
+            this.raf = raf;
+            this.caf = caf;
+        }
+    });
+})();
+</pre>
+</body>
+</html>

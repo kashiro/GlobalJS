@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function(){
+    &#39;use strict&#39;;
+<span id='Global-data-proxy-Proxy'>    /**
+</span>     * @class Global.data.proxy.Proxy
+     */
+    Global.define(&#39;Global.data.proxy.Proxy&#39;,{
+
+        extend: Global.core.ObservableClass,
+
+        singleRequest: true,
+
+        isRequesting: false,
+
+        init: function(config) {
+            this._super(config);
+        },
+
+        get: function(param){
+            var me = this,
+                dfd = $.Deferred();
+
+            if(me.getSingleRequest() &amp;&amp;  me.getIsRequesting()){
+                return;
+            }
+
+            me.setIsRequesting(true);
+            $.ajax(param)
+                .done(function(e){
+                    me.setIsRequesting(false);
+                    dfd.resolve(e);
+                })
+                .fail(function(e){
+                    me.setIsRequesting(false);
+                    dfd.reject(e);
+                });
+
+            return dfd.promise();
+        }
+    });
+})();
+</pre>
+</body>
+</html>

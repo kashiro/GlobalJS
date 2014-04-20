@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function(){
+    &#39;use strict&#39;;
+
+<span id='Global-app-Router'>    /**
+</span>     * @class Global.app.Router
+     * Routing logic according to url pathname
+     * @extend Global.core.BaseClass
+     */
+    Global.define(&#39;Global.app.Router&#39;,{
+
+<span id='Global-app-Router-cfg-path'>        /**
+</span>         * routing
+         * @cfg {Object} path and controller class
+         *
+         *     routing: {
+         *         &#39;/&#39;    : App.controller.Main,
+         *         &#39;/list&#39;: App.controller.List
+         *     }
+         */
+        routing: {
+        },
+
+<span id='Global-app-Router-cfg-cache'>        /**
+</span>         * controllers
+         * @cfg {Object} cache controller instance
+         */
+        controllers: {
+        },
+
+
+<span id='Global-app-Router-method-start'>        /**
+</span>         * @method start
+         * make controller instance according to current pathname
+         * start routing.
+         */
+        start: function() {
+            var pathName = location.pathname,
+                routing  = this.getRouting(),
+                Klass    = this._getController(pathName, routing),
+                instance = Klass ? new Klass() : undefined,
+                key = this._getNoLastSlashPath(pathName);
+            this.controllers[key] = instance;
+        },
+
+<span id='Global-app-Router-method-_getController'>        /**
+</span>         * @method
+         * @private
+         */
+        _getController: function(path, routing){
+            var pattern = /\/$/,
+                hasLastSlash = pattern.test(path) ? path : path + &#39;/&#39;,
+                noLastSlash  = this._getNoLastSlashPath(path),
+                hasLastSlashClass = routing[hasLastSlash],
+                noLastSlashClass = routing[noLastSlash];
+
+            return hasLastSlashClass ? hasLastSlashClass : noLastSlashClass;
+        },
+
+<span id='Global-app-Router-method-_getNoLastSlashPath'>        /**
+</span>         * @method
+         * @private
+         */
+        _getNoLastSlashPath: function(path){
+            var reg = /\/$/;
+            return reg.test(path) ? path.slice(0, -1) : path;
+        }
+
+    });
+})();
+</pre>
+</body>
+</html>

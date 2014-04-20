@@ -17,22 +17,16 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">(function(){
     &#39;use strict&#39;;
-<span id='Global-core-ObservableClass'>    /**
-</span>     * @class Global.core.ObservableClass
-     * class to extend to get observal method
-     * @extends Global.event.EventDispatcher
-     * @alternateClassName Global.ObservableClass
+
+<span id='Global-app-Controller'>    /**
+</span>     * @class Global.app.Controller
+     * This is base controller.
+     * @extend Global.core.ManipulateDomClass
      */
-    Global.define(&#39;Global.core.ObservableClass&#39;,{
+    Global.define(&#39;Global.app.Controller&#39;,{
 
-        alias: &#39;Global.ObservableClass&#39;,
+        extend: Global.core.ManipulateDomClass
 
-        extend: Global.event.EventDispatcher,
-
-        init: function(config){
-            this.listeners = {};
-            this._super(config);
-        }
     });
 })();
 </pre>

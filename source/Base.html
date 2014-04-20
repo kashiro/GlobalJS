@@ -17,22 +17,36 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">(function(){
     &#39;use strict&#39;;
-<span id='Global-core-ObservableClass'>    /**
-</span>     * @class Global.core.ObservableClass
-     * class to extend to get observal method
-     * @extends Global.event.EventDispatcher
-     * @alternateClassName Global.ObservableClass
+
+<span id='Global-view-Base'>    /**
+</span>     * @class Global.view.Base
+     * base class of view.
+     * @extend Global.core.ManipulateDomClass,
      */
-    Global.define(&#39;Global.core.ObservableClass&#39;,{
+    Global.define(&#39;Global.view.Base&#39;,{
 
-        alias: &#39;Global.ObservableClass&#39;,
+        extend: Global.core.ManipulateDomClass,
 
-        extend: Global.event.EventDispatcher,
+        EVENT: {
+            SHOW: &#39;show&#39;,
+            HIDE: &#39;hide&#39;
+        },
 
-        init: function(config){
-            this.listeners = {};
-            this._super(config);
+        show: function(){
+            var $elm = this.get$elm();
+
+            $elm.show();
+            this.dispatchEvent(this.EVENT.SHOW);
+        },
+
+        hide: function(){
+            var $elm = this.get$elm();
+
+            $elm.hide();
+            $elm.remove();
+            this.dispatchEvent(this.EVENT.HIDE);
         }
+
     });
 })();
 </pre>

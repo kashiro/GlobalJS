@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function(){
+    &#39;use strict&#39;;
+
+<span id='Global-media-video-YouTubeEmbed'>    /**
+</span>     * @class Global.media.video.YouTubeEmbed
+     */
+    Global.define(&#39;Global.media.video.YouTubeEmbed&#39;,{
+
+        extend: Global.ObservableClass,
+
+        eventName: {
+            loadSdk   : &#39;loadsdk&#39;,
+            loadPlayer: &#39;loadplayer&#39;
+        },
+
+        $elm: null,
+
+        id: &#39;&#39;,
+
+        sdkId: &#39;g-youtube-embed&#39;,
+
+        sdkSrc: &#39;https://www.youtube.com/iframe_api&#39;,
+
+        inst: null,
+
+        param: null,
+
+        init: function(config){
+            this.listeners = {};
+            this._super(config);
+        },
+
+        initSdk: function(){
+            if(this._hasSdk()){
+                this.embed();
+                return;
+            }
+            this._appendSdk();
+        },
+
+        _appendSdk: function(){
+            window.onYouTubeIframeAPIReady = Global.Functions.bind(this._onLoadSdk, this);
+            var $script = this._getSdkCode();
+            $(document.body).append($script);
+        },
+
+        _onLoadSdk: function(){
+            this.dispatchEvent(this.getEventName().loadSdk, {currentTarget: this});
+            this.embed();
+        },
+
+        _hasSdk: function(){
+            var $sdk = $(&#39;#&#39; + this.getSdkId());
+            return ($sdk.length &gt; 0) &amp;&amp; window.YT;
+        },
+
+        _getSdkCode: function(){
+            var $script = $(&#39;&lt;script&gt;&#39;),
+                id = this.getSdkId(),
+                src = this.getSdkSrc();
+            $script.prop(&#39;id&#39;, id);
+            $script.prop(&#39;src&#39;, src);
+            return $script;
+        },
+
+        embed: function(){
+            var param = this._getParam(),
+                inst = this._createEmbedInstance(param);
+            this.inst = inst;
+        },
+
+        _createEmbedInstance: function(param){
+            return new window.YT.Player(this.getId(), param);
+        },
+
+        _getParam: function(){
+            var param = this.getParam(),
+                add = {
+                    events: {
+                        &#39;onReady&#39;: Global.Functions.bind(this._onReadyVideo, this)
+                    }
+                };
+            return $.extend(true, {}, param, add);
+        },
+
+        _onReadyVideo: function(/*e*/){
+            this.dispatchEvent(this.getEventName().loadPlayer, {currentTarget: this});
+            // override as you like
+            // event.target.playVideo();
+        }
+
+    });
+})();
+</pre>
+</body>
+</html>

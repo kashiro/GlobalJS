@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function(){
+    &#39;use strict&#39;;
+
+<span id='Global-view-Modal'>    /**
+</span>     * @class Global.view.Modal
+     */
+    Global.define(&#39;Global.view.Modal&#39;,{
+
+        extend: Global.core.ManipulateDomClass,
+
+        centerd: true,
+
+        cls: null,
+
+        hideOnMaskClick: false,
+
+        eventName: {
+            show: &#39;show&#39;,
+            hide: &#39;hide&#39;
+        },
+
+        outerTpl: &#39;&lt;div class=&quot;g-modal &lt;%= centerdCls %&gt; &lt;%= cls %&gt;&quot;&gt;&lt;/div&gt;&#39;,
+        maskTpl: &#39;&lt;div class=&quot;g-modal__mask &lt;%= centerdCls %&gt; &lt;%= cls %&gt;&quot;&gt;&lt;/div&gt;&#39;,
+        tpl: [],
+
+        $elm: null,
+
+        compiledOuterTpl: null,
+        compiledMaskTpl: null,
+        compiledTpl: null,
+
+        init: function(config) {
+            this._super(config);
+            this.compiledOuterTpl = this._getCompiledOuterTpl();
+            this.compiledMaskTpl  = this._getCompiledMaskTpl();
+            this.compiledTpl = this._getCompiledTpl();
+        },
+
+        show: function(config){
+            var tplData =this._getTplData(config),
+                $elm, $mask, $body;
+
+            if(this.$elm){
+                return;
+            }
+
+            this._create(tplData);
+            this._setElmCaches(this.getRefs());
+            this._applyEvents(this.getEvents());
+            
+            $elm = this.$elm;
+            $mask = this.$mask;
+            $body = $(document.body);
+
+            $body.append($elm);
+            $body.append($mask);
+
+            $elm.show();
+            $mask.show();
+
+            this.dispatchEvent(this.getEventName().show);
+        },
+
+        _create: function(tplData){
+            var compiledOuterTpl = this.getCompiledOuterTpl(),
+                compiledMaskTpl = this.getCompiledMaskTpl(),
+                compiledTpl = this.getCompiledTpl(),
+                outerHtml = compiledOuterTpl(tplData),
+                maskHtml = compiledMaskTpl(tplData),
+                html = compiledTpl(tplData),
+                $elm = $(outerHtml),
+                $mask = $(maskHtml);
+
+            $elm.append(html);
+            $elm.hide();
+            $mask.hide();
+
+            this.$elm = $elm;
+            this.$mask = $mask;
+
+            if(this.getHideOnMaskClick()){
+                this._bindMaskClickHide($mask);
+            }else{
+                this._bindMaskClickNone($mask);
+            }
+        },
+
+        _bindMaskClickHide: function($mask){
+            var me = this;
+            $mask.on(&#39;click&#39;, function(){
+                me.hide();
+            });
+        },
+
+        _bindMaskClickNone: function($mask){
+            $mask.on(&#39;click&#39;, function(e){
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        },
+
+        _getTplData: function(config){
+            var modalTplData = this._getModalTplData();
+            return $.extend(true, {}, modalTplData, config);
+        },
+
+        hide:function(){
+            this.$elm.hide();
+            this.$elm.remove();
+            this.$mask.hide();
+            this.$mask.remove();
+
+            this.$elm = null;
+            this.$mask = null;
+
+            this.dispatchEvent(this.getEventName().hide);
+        },
+
+        _getCompiledOuterTpl: function(){
+            return _.template(this.getOuterTpl());
+        },
+
+        _getCompiledMaskTpl: function(){
+            return _.template(this.getMaskTpl());
+        },
+
+        _getCompiledTpl: function(){
+            return _.template(this.getTpl());
+        },
+
+        _getModalTplData: function(){
+            var cls = this.getCls() ? this.getCls() : &#39;&#39;,
+                centerdCls= this.getCenterd() ? &#39;g-modal--centerd&#39; : &#39;&#39;;
+            return {
+                &#39;cls&#39;       : cls,
+                &#39;centerdCls&#39;: centerdCls
+            };
+        }
+
+    });
+})();
+</pre>
+</body>
+</html>
