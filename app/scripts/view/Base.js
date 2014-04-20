@@ -21,9 +21,13 @@
              * Fired when modal is hidden
              */
             hide: 'hide'
- 
+
         },
 
+        /**
+         * @method
+         * show modal
+         */
         show: function(){
             var $elm = this.get$elm();
 
@@ -31,6 +35,10 @@
             this.dispatchEvent(this.EVENT.SHOW);
         },
 
+        /**
+         * @method
+         * hide modal
+         */
         hide: function(){
             var $elm = this.get$elm();
 
