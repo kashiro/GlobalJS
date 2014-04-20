@@ -73,7 +73,6 @@
          * get data by using $.ajax
          * @param {Object} parameter of $.ajax(data: {});
          * @return {Object} jquery.Deferred
-         * @public
          */
         get: function(param){
             var _param = this._getRequestObj('GET', param);
