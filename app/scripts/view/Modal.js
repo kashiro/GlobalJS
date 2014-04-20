@@ -3,32 +3,53 @@
 
     /**
      * @class Global.view.Modal
+     * base modal class of view
+     * @extend Global.view.Base
      */
     Global.define('Global.view.Modal',{
 
-        extend: Global.core.ManipulateDomClass,
+        extend: Global.view.Base,
 
+        /**
+         * @cfg {Boolean} whether modal is centered or not
+         */
         centerd: true,
 
+        /**
+         * @cfg {String} css class which is added outer element of modal
+         */
         cls: null,
 
+        /**
+         * @cfg {Boolean} whether modal is hide when user click background
+         */
         hideOnMaskClick: false,
 
-        eventName: {
-            show: 'show',
-            hide: 'hide'
-        },
-
+        /**
+         * @cfg {String} template of modal's outer
+         */
         outerTpl: '<div class="g-modal <%= centerdCls %> <%= cls %>"></div>',
+        /**
+         * @cfg {String} template of modal mask(background)
+         */
         maskTpl: '<div class="g-modal__mask <%= centerdCls %> <%= cls %>"></div>',
+        /**
+         * @cfg {String} modal inner template
+         */
         tpl: [],
 
+        /**
+         * @cfg {Object} modal jquery element
+         */
         $elm: null,
 
         compiledOuterTpl: null,
         compiledMaskTpl: null,
         compiledTpl: null,
 
+        /**
+         * @constructor
+         */
         init: function(config) {
             this._super(config);
             this.compiledOuterTpl = this._getCompiledOuterTpl();
@@ -36,6 +57,10 @@
             this.compiledTpl = this._getCompiledTpl();
         },
 
+        /**
+         * @method
+         * show modal
+         */
         show: function(config){
             var tplData =this._getTplData(config),
                 $elm, $mask, $body;
@@ -47,7 +72,7 @@
             this._create(tplData);
             this._setElmCaches(this.getRefs());
             this._applyEvents(this.getEvents());
-            
+
             $elm = this.$elm;
             $mask = this.$mask;
             $body = $(document.body);
@@ -61,6 +86,10 @@
             this.dispatchEvent(this.getEventName().show);
         },
 
+        /**
+         * @method
+         * @private
+         */
         _create: function(tplData){
             var compiledOuterTpl = this.getCompiledOuterTpl(),
                 compiledMaskTpl = this.getCompiledMaskTpl(),
@@ -85,6 +114,10 @@
             }
         },
 
+        /**
+         * @method
+         * @private
+         */
         _bindMaskClickHide: function($mask){
             var me = this;
             $mask.on('click', function(){
@@ -92,6 +125,10 @@
             });
         },
 
+        /**
+         * @method
+         * @private
+         */
         _bindMaskClickNone: function($mask){
             $mask.on('click', function(e){
                 e.preventDefault();
@@ -99,11 +136,19 @@
             });
         },
 
+        /**
+         * @method
+         * @private
+         */
         _getTplData: function(config){
             var modalTplData = this._getModalTplData();
             return $.extend(true, {}, modalTplData, config);
         },
 
+        /**
+         * @method
+         * hide modal
+         */
         hide:function(){
             this.$elm.hide();
             this.$elm.remove();
@@ -116,18 +161,34 @@
             this.dispatchEvent(this.getEventName().hide);
         },
 
+        /**
+         * @method
+         * @private
+         */
         _getCompiledOuterTpl: function(){
             return _.template(this.getOuterTpl());
         },
 
+        /**
+         * @method
+         * @private
+         */
         _getCompiledMaskTpl: function(){
             return _.template(this.getMaskTpl());
         },
 
+        /**
+         * @method
+         * @private
+         */
         _getCompiledTpl: function(){
             return _.template(this.getTpl());
         },
 
+        /**
+         * @method
+         * @private
+         */
         _getModalTplData: function(){
             var cls = this.getCls() ? this.getCls() : '',
                 centerdCls= this.getCenterd() ? 'g-modal--centerd' : '';

@@ -11,8 +11,17 @@
         extend: Global.core.ManipulateDomClass,
 
         EVENT: {
-            SHOW: 'show',
-            HIDE: 'hide'
+            /**
+             * @event show
+             * Fired when modal is showed
+             */
+            show: 'show',
+            /**
+             * @event hide
+             * Fired when modal is hidden
+             */
+            hide: 'hide'
+ 
         },
 
         show: function(){
