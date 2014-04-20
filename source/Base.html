@@ -28,10 +28,23 @@
         extend: Global.core.ManipulateDomClass,
 
         EVENT: {
-            SHOW: &#39;show&#39;,
-            HIDE: &#39;hide&#39;
+<span id='Global-view-Base-event-show'>            /**
+</span>             * @event show
+             * Fired when modal is showed
+             */
+            show: &#39;show&#39;,
+<span id='Global-view-Base-event-hide'>            /**
+</span>             * @event hide
+             * Fired when modal is hidden
+             */
+            hide: &#39;hide&#39;
+
         },
 
+<span id='Global-view-Base-method-show'>        /**
+</span>         * @method
+         * show modal
+         */
         show: function(){
             var $elm = this.get$elm();
 
@@ -39,6 +52,10 @@
             this.dispatchEvent(this.EVENT.SHOW);
         },
 
+<span id='Global-view-Base-method-hide'>        /**
+</span>         * @method
+         * hide modal
+         */
         hide: function(){
             var $elm = this.get$elm();
 

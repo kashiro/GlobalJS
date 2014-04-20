@@ -20,32 +20,53 @@
 
 <span id='Global-view-Modal'>    /**
 </span>     * @class Global.view.Modal
+     * base modal class of view
+     * @extend Global.view.Base
      */
     Global.define(&#39;Global.view.Modal&#39;,{
 
-        extend: Global.core.ManipulateDomClass,
+        extend: Global.view.Base,
 
+<span id='Global-view-Modal-cfg-whether'>        /**
+</span>         * @cfg {Boolean} whether modal is centered or not
+         */
         centerd: true,
 
+<span id='Global-view-Modal-cfg-css'>        /**
+</span>         * @cfg {String} css class which is added outer element of modal
+         */
         cls: null,
 
+<span id='Global-view-Modal-cfg-whether'>        /**
+</span>         * @cfg {Boolean} whether modal is hide when user click background
+         */
         hideOnMaskClick: false,
 
-        eventName: {
-            show: &#39;show&#39;,
-            hide: &#39;hide&#39;
-        },
-
+<span id='Global-view-Modal-cfg-template'>        /**
+</span>         * @cfg {String} template of modal&#39;s outer
+         */
         outerTpl: &#39;&lt;div class=&quot;g-modal &lt;%= centerdCls %&gt; &lt;%= cls %&gt;&quot;&gt;&lt;/div&gt;&#39;,
+<span id='Global-view-Modal-cfg-template'>        /**
+</span>         * @cfg {String} template of modal mask(background)
+         */
         maskTpl: &#39;&lt;div class=&quot;g-modal__mask &lt;%= centerdCls %&gt; &lt;%= cls %&gt;&quot;&gt;&lt;/div&gt;&#39;,
+<span id='Global-view-Modal-cfg-modal'>        /**
+</span>         * @cfg {String} modal inner template
+         */
         tpl: [],
 
+<span id='Global-view-Modal-cfg-modal'>        /**
+</span>         * @cfg {Object} modal jquery element
+         */
         $elm: null,
 
         compiledOuterTpl: null,
         compiledMaskTpl: null,
         compiledTpl: null,
 
+<span id='Global-view-Modal-method-constructor'>        /**
+</span>         * @constructor
+         */
         init: function(config) {
             this._super(config);
             this.compiledOuterTpl = this._getCompiledOuterTpl();
@@ -53,6 +74,10 @@
             this.compiledTpl = this._getCompiledTpl();
         },
 
+<span id='Global-view-Modal-method-show'>        /**
+</span>         * @method
+         * show modal
+         */
         show: function(config){
             var tplData =this._getTplData(config),
                 $elm, $mask, $body;
@@ -64,7 +89,7 @@
             this._create(tplData);
             this._setElmCaches(this.getRefs());
             this._applyEvents(this.getEvents());
-            
+
             $elm = this.$elm;
             $mask = this.$mask;
             $body = $(document.body);
@@ -78,6 +103,10 @@
             this.dispatchEvent(this.getEventName().show);
         },
 
+<span id='Global-view-Modal-method-_create'>        /**
+</span>         * @method
+         * @private
+         */
         _create: function(tplData){
             var compiledOuterTpl = this.getCompiledOuterTpl(),
                 compiledMaskTpl = this.getCompiledMaskTpl(),
@@ -102,6 +131,10 @@
             }
         },
 
+<span id='Global-view-Modal-method-_bindMaskClickHide'>        /**
+</span>         * @method
+         * @private
+         */
         _bindMaskClickHide: function($mask){
             var me = this;
             $mask.on(&#39;click&#39;, function(){
@@ -109,6 +142,10 @@
             });
         },
 
+<span id='Global-view-Modal-method-_bindMaskClickNone'>        /**
+</span>         * @method
+         * @private
+         */
         _bindMaskClickNone: function($mask){
             $mask.on(&#39;click&#39;, function(e){
                 e.preventDefault();
@@ -116,11 +153,19 @@
             });
         },
 
+<span id='Global-view-Modal-method-_getTplData'>        /**
+</span>         * @method
+         * @private
+         */
         _getTplData: function(config){
             var modalTplData = this._getModalTplData();
             return $.extend(true, {}, modalTplData, config);
         },
 
+<span id='Global-view-Modal-method-hide'>        /**
+</span>         * @method
+         * hide modal
+         */
         hide:function(){
             this.$elm.hide();
             this.$elm.remove();
@@ -133,18 +178,34 @@
             this.dispatchEvent(this.getEventName().hide);
         },
 
+<span id='Global-view-Modal-method-_getCompiledOuterTpl'>        /**
+</span>         * @method
+         * @private
+         */
         _getCompiledOuterTpl: function(){
             return _.template(this.getOuterTpl());
         },
 
+<span id='Global-view-Modal-method-_getCompiledMaskTpl'>        /**
+</span>         * @method
+         * @private
+         */
         _getCompiledMaskTpl: function(){
             return _.template(this.getMaskTpl());
         },
 
+<span id='Global-view-Modal-method-_getCompiledTpl'>        /**
+</span>         * @method
+         * @private
+         */
         _getCompiledTpl: function(){
             return _.template(this.getTpl());
         },
 
+<span id='Global-view-Modal-method-_getModalTplData'>        /**
+</span>         * @method
+         * @private
+         */
         _getModalTplData: function(){
             var cls = this.getCls() ? this.getCls() : &#39;&#39;,
                 centerdCls= this.getCenterd() ? &#39;g-modal--centerd&#39; : &#39;&#39;;
