@@ -20,57 +20,126 @@
 
 <span id='Global-media-video-YouTubeEmbed'>    /**
 </span>     * @class Global.media.video.YouTubeEmbed
+     * @extend Global.ObservableClass
+     *
+     *
+     *     var embed = Global.media.video.YouTubeEmbed({
+     *         id: &#39;test&#39;,
+     *         param: {
+     *             videoId: &#39;M7lc1UVf-VE&#39;
+     *         }
+     *     });
+     *     embed.initSdk();
      */
     Global.define(&#39;Global.media.video.YouTubeEmbed&#39;,{
 
         extend: Global.ObservableClass,
 
         eventName: {
+<span id='Global-media-video-YouTubeEmbed-event-loadsdk'>            /**
+</span>             * @event loadsdk
+             * Fired when youtube sdk is loaded
+             * @param {Global.media.video.YouTubeEmbed} target this class.
+             * @param {String} eventName this event name.
+             * @param {Object} data data of this event.
+             */
             loadSdk   : &#39;loadsdk&#39;,
+<span id='Global-media-video-YouTubeEmbed-event-loadplayer'>            /**
+</span>             * @event loadplayer
+             * Fired when player is loaded
+             * @param {Global.media.video.YouTubeEmbed} target this class.
+             * @param {String} eventName this event name.
+             * @param {Object} data data of this event.
+             */
             loadPlayer: &#39;loadplayer&#39;
         },
 
-        $elm: null,
-
+<span id='Global-media-video-YouTubeEmbed-cfg-id'>        /**
+</span>         * @cfg {String} id player id
+         */
         id: &#39;&#39;,
 
+<span id='Global-media-video-YouTubeEmbed-cfg-sdkId'>        /**
+</span>         * @cfg {String} sdkId sdk id
+         */
         sdkId: &#39;g-youtube-embed&#39;,
 
+<span id='Global-media-video-YouTubeEmbed-cfg-sdkSrc'>        /**
+</span>         * @cfg {String} sdkSrc src of sdk
+         */
         sdkSrc: &#39;https://www.youtube.com/iframe_api&#39;,
 
+<span id='Global-media-video-YouTubeEmbed-cfg-inst'>        /**
+</span>         * @cfg {Object} inst instance of youtube embed class
+         */
         inst: null,
 
+<span id='Global-media-video-YouTubeEmbed-cfg-param'>        /**
+</span>         * @cfg {Object} param parameter set to embed class
+         * @see https://developers.google.com/youtube/iframe_api_reference?hl=ja#Loading_a_Video_Player
+         */
         param: null,
 
+<span id='Global-media-video-YouTubeEmbed-method-init'>        /**
+</span>         * @method init
+         * @constructor
+         */
         init: function(config){
-            this.listeners = {};
             this._super(config);
         },
 
+<span id='Global-media-video-YouTubeEmbed-method-initsdk'>        /**
+</span>         * @method initsdk
+         */
         initSdk: function(){
             if(this._hasSdk()){
-                this.embed();
+                this._onLoadSdk();
                 return;
             }
             this._appendSdk();
         },
 
+<span id='Global-media-video-YouTubeEmbed-method-embed'>        /**
+</span>         * @method embed
+         */
+        embed: function(){
+            var param = this._getParam(),
+                inst = this._createEmbedInstance(param);
+            this.inst = inst;
+        },
+
+<span id='Global-media-video-YouTubeEmbed-method-_appendSdk'>        /**
+</span>         * @method _appendSdk
+         * @private
+         */
         _appendSdk: function(){
             window.onYouTubeIframeAPIReady = Global.Functions.bind(this._onLoadSdk, this);
             var $script = this._getSdkCode();
             $(document.body).append($script);
         },
 
+<span id='Global-media-video-YouTubeEmbed-method-_onLoadSdk'>        /**
+</span>         * @method _onLoadSdk
+         * @private
+         */
         _onLoadSdk: function(){
             this.dispatchEvent(this.getEventName().loadSdk, {currentTarget: this});
             this.embed();
         },
 
+<span id='Global-media-video-YouTubeEmbed-method-_hasSdk'>        /**
+</span>         * @method _hasSdk
+         * @private
+         */
         _hasSdk: function(){
             var $sdk = $(&#39;#&#39; + this.getSdkId());
             return ($sdk.length &gt; 0) &amp;&amp; window.YT;
         },
 
+<span id='Global-media-video-YouTubeEmbed-method-_getSdkCode'>        /**
+</span>         * @method _getSdkCode
+         * @private
+         */
         _getSdkCode: function(){
             var $script = $(&#39;&lt;script&gt;&#39;),
                 id = this.getSdkId(),
@@ -80,16 +149,17 @@
             return $script;
         },
 
-        embed: function(){
-            var param = this._getParam(),
-                inst = this._createEmbedInstance(param);
-            this.inst = inst;
-        },
-
+<span id='Global-media-video-YouTubeEmbed-method-_createEmbedInstance'>        /**
+</span>         * @method _createEmbedInstance
+         * @private
+         */
         _createEmbedInstance: function(param){
             return new window.YT.Player(this.getId(), param);
         },
 
+<span id='Global-media-video-YouTubeEmbed-method-_getParam'>        /**
+</span>         * @method _getParam
+         */
         _getParam: function(){
             var param = this.getParam(),
                 add = {
@@ -100,6 +170,10 @@
             return $.extend(true, {}, param, add);
         },
 
+<span id='Global-media-video-YouTubeEmbed-method-_onReadyVideo'>        /**
+</span>         * @method _onReadyVideo
+         * @private
+         */
         _onReadyVideo: function(/*e*/){
             this.dispatchEvent(this.getEventName().loadPlayer, {currentTarget: this});
             // override as you like

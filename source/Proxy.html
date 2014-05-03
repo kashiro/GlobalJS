@@ -24,14 +24,25 @@
 
         extend: Global.core.ObservableClass,
 
+<span id='Global-data-proxy-Proxy-cfg-singleRequest'>        /**
+</span>         * @cfg {Boolean} singleRequest whether when this prop is true this class dose not send request while another request is sending.
+         */
         singleRequest: true,
 
+<span id='Global-data-proxy-Proxy-cfg-isRequesting'>        /**
+</span>         * @cfg {Boolean} isRequesting whether a request is sending or not
+         */
         isRequesting: false,
 
         init: function(config) {
             this._super(config);
         },
 
+<span id='Global-data-proxy-Proxy-method-get'>        /**
+</span>         * @method get
+         * send ajax request
+         * @param {Object} param
+         */
         get: function(param){
             var me = this,
                 dfd = $.Deferred();

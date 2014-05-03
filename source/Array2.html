@@ -125,6 +125,21 @@
         remove: function(target, index, count){
             var _count = count || 1;
             target.splice(index, _count);
+        },
+
+<span id='Global-core-Array-method-makeRandomList'>        /**
+</span>         * @method makeRandomList
+         * @param {Array} list to make ramdom
+         * @param {Number} num length of new ramdom list. default: length of list
+         */
+        makeRandomList: function(list, num) {
+            var _num = num || list.length,
+                randoms = Global.math.Random.getRandomNumList(_num),
+            res = [];
+            Global.Array.each(randoms, function(index, random) {
+                res.push(list[random]);
+            });
+            return res;
         }
 
     });
