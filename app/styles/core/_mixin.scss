@@ -13,9 +13,50 @@
 @mixin overflowEllipsis {
     white-space: nowrap;
     overflow: hidden;
-    -ms-text-overflow: ellipsis;
     text-overflow: ellipsis;
 }
 @function fz($size, $base:$base-font-size) {
     @return $size/$base;
 }
+/*------------------------------------*\
+    image
+\*------------------------------------*/
+@mixin backgroundImage($image){
+  width : image-width($image);
+  height: image-height($image);
+  background: image-url($image) no-repeat center;
+}
+// $map: sprite-map("../img/slideshow/index/picts/*.png");
+// $map_url: sprite-url($map);
+@mixin sprite_img($map, $name, $map_url, $max_width, $device_pixel_ratio:1) {
+    background-image: $map_url;
+    background-repeat: no-repeat;
+    display: block;
+    height: image-height(sprite-file($map, $name))/$device_pixel_ratio;
+    width: image-width(sprite-file($map, $name))/$device_pixel_ratio;
+    $ypos: round(nth(sprite-position($map, $name), 2));
+    background-position: 0 $ypos;
+    @include background-size($max_width auto);
+}
+/*------------------------------------*\
+    other
+\*------------------------------------*/
+@mixin pseudoElm($top:initial, $right:initial, $bottom:initial, $left:initial){
+  display: block;
+  position: absolute;
+  content: '';
+  top: $top;
+  left: $left;
+  right: $right;
+  bottom: $bottom;
+}
+@mixin placeholderColor($color) {
+    &:-moz-placeholder {
+        color:$color;
+    }
+    &:-webkit-input-placeholder {
+        color:$color;
+    }
+}
+
+

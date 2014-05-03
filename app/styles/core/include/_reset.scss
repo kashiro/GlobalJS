@@ -97,6 +97,7 @@ input, textarea, select, label {
     font-family: inherit;
     vertical-align: middle;
     resize: none;
+    -webkit-appearance: none;
 }
 label { cursor: pointer; }
 textarea { overflow: auto; }
