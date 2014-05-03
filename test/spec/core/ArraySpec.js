@@ -73,4 +73,37 @@ describe('Test for core/Array.js', function () {
         });
     });
 
+    describe('#getRandomNumList', function(){
+        it('return array object which length is smae as length you passed', function(){
+            var list = Global.Array.getRandomNumList(3);
+            expect(list).to.have.length(3);
+        });
+        it('return array which contain uniq numbers', function(){
+            var list = Global.Array.getRandomNumList(3);
+
+            expect(list[0]).to.not.equal(list[1]);
+            expect(list[0]).to.not.equal(list[2]);
+
+            expect(list[1]).to.not.equal(list[0]);
+            expect(list[1]).to.not.equal(list[2]);
+
+            expect(list[2]).to.not.equal(list[0]);
+            expect(list[2]).to.not.equal(list[1]);
+        });
+    });
+
+    describe('#makeRandomList', function() {
+        it('return list which made random',function() {
+            var list = ['1', '2', '3'],
+                random = Global.Array.makeRandomList(list);
+            expect(random).to.have.length(3);
+            //console.log(random);
+        });
+        it('return list which made random',function() {
+            var list = ['1', '2', '3'],
+                random = Global.Array.makeRandomList(list, 2);
+            expect(random).to.have.length(2);
+            //console.log(random);
+        });
+    });
 });
