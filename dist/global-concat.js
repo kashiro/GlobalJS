@@ -167,6 +167,11 @@
          * @param {Object} obj target object
          * @return {Boolean} whether target is Date or not
          */
+         /**
+         * @method isArray
+         * @param {Object} obj target object
+         * @return {Boolean} whether target is Array or not
+         */
         _makeWhetherFun: function(){
             var me = this,
                 list = ['Function', 'String', 'Number', 'Date', 'Array'];
@@ -464,7 +469,12 @@
 
         alias: 'Global.ObservableClass',
 
-        extend: Global.event.EventDispatcher
+        extend: Global.event.EventDispatcher,
+
+        init: function(config){
+            this.listeners = {};
+            this._super(config);
+        }
     });
 })();
 
@@ -472,9 +482,12 @@
     'use strict';
     /**
      * @class Global.core.ManipulateDomClass
+     * @alternateClassName Global.ObservableClass
      * @extends Global.core.ObservableClass
      */
     Global.define('Global.core.ManipulateDomClass',{
+
+        alias: 'Global.ObservableClass',
 
         extend: Global.core.ObservableClass,
 
@@ -615,19 +628,6 @@
         singleton: true,
 
         /**
-         * @method isArray
-         * Returns true if an object is an array, false if it is not.
-         * @param {Object} object The object to be checked.
-         * @return {Boolean} true if an object is an array.
-         *
-         *     // return true.
-         *     Global.core.Array.isArray([]);
-         */
-        isArray: function(target){
-            return target instanceof Array;
-        },
-
-        /**
          * @method args2Array
          * Returns array which arguments is convert to.
          * @param {Object} arguments arguments.
@@ -720,6 +720,21 @@
         remove: function(target, index, count){
             var _count = count || 1;
             target.splice(index, _count);
+        },
+
+        /**
+         * @method makeRandomList
+         * @param {Array} list to make ramdom
+         * @param {Number} num length of new ramdom list. default: length of list
+         */
+        makeRandomList: function(list, num) {
+            var _num = num || list.length,
+                randoms = Global.math.Random.getRandomNumList(_num),
+            res = [];
+            Global.Array.each(randoms, function(index, random) {
+                res.push(list[random]);
+            });
+            return res;
         }
 
     });
@@ -779,7 +794,7 @@
             var ary;
             return function(){
                 ary = Global.core.Array.args2Array(arguments);
-                if(Global.core.Array.isArray(args)){
+                if(Global.isArray(args)){
                     ary = ary.concat(args);
                 }
                 callback.apply(context, ary);
@@ -799,7 +814,7 @@
         singleton: true,
 
         /**
-         * @private list2Map
+         * @method list2Map
          * convert list to Map
          * @param  {Array} data to be converted
          * @param  {String} key object key
@@ -824,15 +839,25 @@
 
         extend: Global.core.ObservableClass,
 
+        /**
+         * @cfg {Boolean} singleRequest whether when this prop is true this class dose not send request while another request is sending.
+         */
         singleRequest: true,
 
+        /**
+         * @cfg {Boolean} isRequesting whether a request is sending or not
+         */
         isRequesting: false,
 
         init: function(config) {
-            this.listeners = {};
             this._super(config);
         },
 
+        /**
+         * @method get
+         * send ajax request
+         * @param {Object} param
+         */
         get: function(param){
             var me = this,
                 dfd = $.Deferred();
@@ -861,17 +886,38 @@
     'use strict';
     /**
      * @class Global.data.model.Model
+     * @extend Global.core.ObservableClass,
      */
     Global.define('Global.data.model.Model',{
 
         extend: Global.core.ObservableClass,
 
         EVENT_NAME: {
+            /**
+             * @event load
+             * Fired when data is loaded
+             * @param {Global.data.model.Model} target this class.
+             * @param {String} eventName this event name.
+             * @param {Object} data data of this event.
+             */
             LOAD: 'load'
         },
 
+        /**
+         * @cfg {Global.data.proxy.Proxy} Proxy
+         */
         proxy : Global.data.proxy.Proxy,
 
+        /**
+         * @cfg {Object} requestSettings request settings of $.ajax method
+         *
+         *      requestSettings: {
+         *          GET: {
+         *              type: 'GET',
+         *              dataType: 'json'
+         *          }
+         *      }
+         */
         requestSetting: {
             GET: {
                 type: 'GET',
@@ -879,40 +925,70 @@
             }
         },
 
+        /**
+         * @cfg {Object} requestParam request parameter of $.ajax({data: {}})
+         *
+         *      requestParam: {
+         *          GET: {},
+         *          POST: {},
+         *          DELETE: {},
+         *          PUT: {}
+         *      }
+         */
         requestParam: {
             GET: {}
         },
 
+        /**
+         * @cfg {Object|String} data data of response
+         */
         data: null,
 
+        /**
+         * @constructor
+         */
         init: function(config){
-            this.listeners = {};
             this._super(config);
             this.proxy = new this.proxy();
         },
 
+        /**
+         * @method get
+         * get data by using $.ajax
+         * @param {Object} parameter of $.ajax(data: {});
+         * @return {Object} jquery.Deferred
+         */
         get: function(param){
             var _param = this._getRequestObj('GET', param);
             return this._request(_param);
         },
 
+        /**
+         * @method
+         * @private
+         */
         _request: function(param) {
             var me = this,
                 dfd = $.Deferred(),
                 ajaxDfd = this.proxy.get(param);
 
             ajaxDfd.done(function(e){
-                me._onSuccess(dfd, e);
+                me._onSuccess(e);
+                dfd.resolve(e);
+                me.dispatchEvent(me.EVENT_NAME.LOAD, e);
             });
 
             ajaxDfd.fail(function(e){
                 dfd.reject(e);
-                me.dispatchEvent(me.EVENT_NAME.LOAD, e);
             });
 
             return dfd.promise();
         },
 
+        /**
+         * @method
+         * @private
+         */
         _getRequestObj: function(type, param) {
             var requestSettings = this.getRequestSetting()[type],
                 requestParam = this.getRequestParam()[type],
@@ -922,15 +998,22 @@
             return requestSettings;
         },
 
-        _onSuccess: function(dfd, data){
-            var _data = this.modifyData(data);
+        /**
+         * @method
+         * @private
+         */
+        _onSuccess: function(data){
+            var _data = this._modifyData(data);
 
             this.setData(_data);
-            dfd.resolve(_data);
             this.dispatchEvent(this.EVENT_NAME.LOAD, _data);
         },
 
-        modifyData: function(data){
+        /**
+         * @method
+         * @private
+         */
+        _modifyData: function(data){
             // override if you need.
             return data;
         }
@@ -1262,44 +1345,75 @@
     /**
      * @class Global.util.SpriteSheet
      * iterate css class at specific interval
-     * @extends Global.core.BaseClass
+     * @extends Global.core.ObservableClass,
      */
     Global.define('Global.util.SpriteSheet',{
 
         extend : Global.core.ObservableClass,
 
+        /**
+         * @cfg {Array} class list to replace css class
+         */
         classList: [],
 
+        /**
+         * @cfg {Number} interval msec to do sprite
+         */
         interval : 500,
 
+        /**
+         * @cfg {String} name of event
+         */
         eventName: {
+            /* @event Fired sprite is finished*/
             end: 'end',
+            /* @event Fired sprite is executed*/
             change: 'change'
         },
 
+        /**
+         * @cfg {String} selector of target element
+         */
         targetSelector: null,
 
+        /**
+         * @cfg {Object} target jQuery element
+         */
         $elm: null,
 
+        /**
+         * @cfg {Number} total count of sprite
+         */
         totalCount: 0,
 
+        /**
+         * @cfg {Number} limit of sprite
+         */
         limit: null,
 
         count: 0,
 
+        /**
+         * @cfg {Number} interval id to use cancel interval
+         */
         intervalId: null,
 
+        /**
+         * @constructor
+         */
         init: function(config){
-            this.listeners = {};
             this.$elm = $(config.targetSelector);
             this._super(config);
         },
 
+        /**
+         * @method execute sprite
+         */
         execute: function(){
             var me = this;
             me.intervalId = setInterval(function(){
-                me.doSprite(me.count);
-                me.countUp(me.count);
+                me._doSprite(me.count);
+                me._countUp(me.count);
                 me.dispatchEvent(me.getEventName().change, me.getTotalCount());
                 if(Global.isNumber(me.getLimit()) && me.getTotalCount() === me.getLimit()){
                     window.clearInterval(me.intervalId);
@@ -1309,24 +1423,32 @@
             }, me.interval);
         },
 
-        doSprite: function(count){
+        /**
+         * @private
+         */
+        _doSprite: function(count){
             var me = this,
-                cls = me.getClass(count);
+                cls = me._getClass(count);
             me.$elm.removeClass(cls.current);
             me.$elm.addClass(cls.next);
         },
 
-        countUp: function(count){
-            this.count = (1+count) % this.classList.length;
+        /**
+         * @private
+         */
+        _countUp: function(count){
+            this.count = (1+count) % (this.classList.length + 1);
             this.totalCount = ++this.totalCount;
         },
 
-        getClass: function(count){
+        /**
+         * @private
+         */
+        _getClass: function(count){
             var me = this,
-                nextIndex = count+1,
-                _nextIndex = nextIndex === this.classList.length ? 0 : nextIndex,
+                nextIndex = (1 + count) % this.classList.length,
                 current = me.classList[count],
-                next    = me.classList[_nextIndex];
+                next    = me.classList[nextIndex];
             return {
                 current: current,
                 next   : next
@@ -1341,7 +1463,7 @@
     /**
      * @class Global.util.RequestAnimationFramae
      * @extends Global.core.BaseClass
-     * @singletone
+     * @singleton
      */
     Global.define('Global.util.RequestAnimationFrame', {
 
@@ -1389,57 +1511,126 @@
 
     /**
      * @class Global.media.video.YouTubeEmbed
+     * @extend Global.ObservableClass
+     *
+     *
+     *     var embed = Global.media.video.YouTubeEmbed({
+     *         id: 'test',
+     *         param: {
+     *             videoId: 'M7lc1UVf-VE'
+     *         }
+     *     });
+     *     embed.initSdk();
      */
     Global.define('Global.media.video.YouTubeEmbed',{
 
         extend: Global.ObservableClass,
 
         eventName: {
+            /**
+             * @event loadsdk
+             * Fired when youtube sdk is loaded
+             * @param {Global.media.video.YouTubeEmbed} target this class.
+             * @param {String} eventName this event name.
+             * @param {Object} data data of this event.
+             */
             loadSdk   : 'loadsdk',
+            /**
+             * @event loadplayer
+             * Fired when player is loaded
+             * @param {Global.media.video.YouTubeEmbed} target this class.
+             * @param {String} eventName this event name.
+             * @param {Object} data data of this event.
+             */
             loadPlayer: 'loadplayer'
         },
 
-        $elm: null,
-
+        /**
+         * @cfg {String} id player id
+         */
         id: '',
 
+        /**
+         * @cfg {String} sdkId sdk id
+         */
         sdkId: 'g-youtube-embed',
 
+        /**
+         * @cfg {String} sdkSrc src of sdk
+         */
         sdkSrc: 'https://www.youtube.com/iframe_api',
 
+        /**
+         * @cfg {Object} inst instance of youtube embed class
+         */
         inst: null,
 
+        /**
+         * @cfg {Object} param parameter set to embed class
+         * @see https://developers.google.com/youtube/iframe_api_reference?hl=ja#Loading_a_Video_Player
+         */
         param: null,
 
+        /**
+         * @method init
+         * @constructor
+         */
         init: function(config){
-            this.listeners = {};
             this._super(config);
         },
 
+        /**
+         * @method initsdk
+         */
         initSdk: function(){
             if(this._hasSdk()){
-                this.embed();
+                this._onLoadSdk();
                 return;
             }
             this._appendSdk();
         },
 
+        /**
+         * @method embed
+         */
+        embed: function(){
+            var param = this._getParam(),
+                inst = this._createEmbedInstance(param);
+            this.inst = inst;
+        },
+
+        /**
+         * @method _appendSdk
+         * @private
+         */
         _appendSdk: function(){
             window.onYouTubeIframeAPIReady = Global.Functions.bind(this._onLoadSdk, this);
             var $script = this._getSdkCode();
             $(document.body).append($script);
         },
 
+        /**
+         * @method _onLoadSdk
+         * @private
+         */
         _onLoadSdk: function(){
             this.dispatchEvent(this.getEventName().loadSdk, {currentTarget: this});
             this.embed();
         },
 
+        /**
+         * @method _hasSdk
+         * @private
+         */
         _hasSdk: function(){
             var $sdk = $('#' + this.getSdkId());
             return ($sdk.length > 0) && window.YT;
         },
 
+        /**
+         * @method _getSdkCode
+         * @private
+         */
         _getSdkCode: function(){
             var $script = $('<script>'),
                 id = this.getSdkId(),
@@ -1449,16 +1640,17 @@
             return $script;
         },
 
-        embed: function(){
-            var param = this._getParam(),
-                inst = this._createEmbedInstance(param);
-            this.inst = inst;
-        },
-
+        /**
+         * @method _createEmbedInstance
+         * @private
+         */
         _createEmbedInstance: function(param){
             return new window.YT.Player(this.getId(), param);
         },
 
+        /**
+         * @method _getParam
+         */
         _getParam: function(){
             var param = this.getParam(),
                 add = {
@@ -1469,6 +1661,10 @@
             return $.extend(true, {}, param, add);
         },
 
+        /**
+         * @method _onReadyVideo
+         * @private
+         */
         _onReadyVideo: function(/*e*/){
             this.dispatchEvent(this.getEventName().loadPlayer, {currentTarget: this});
             // override as you like
@@ -1484,17 +1680,30 @@
     /**
      * @class Global.view.Base
      * base class of view.
-     * @extend Global.view.Base
+     * @extend Global.core.ManipulateDomClass,
      */
     Global.define('Global.view.Base',{
 
         extend: Global.core.ManipulateDomClass,
 
         EVENT: {
-            SHOW: 'show',
-            HIDE: 'hide'
+            /**
+             * @event show
+             * Fired when modal is showed
+             */
+            show: 'show',
+            /**
+             * @event hide
+             * Fired when modal is hidden
+             */
+            hide: 'hide'
+
         },
 
+        /**
+         * @method
+         * show modal
+         */
         show: function(){
             var $elm = this.get$elm();
 
@@ -1502,6 +1711,10 @@
             this.dispatchEvent(this.EVENT.SHOW);
         },
 
+        /**
+         * @method
+         * hide modal
+         */
         hide: function(){
             var $elm = this.get$elm();
 
@@ -1518,32 +1731,53 @@
 
     /**
      * @class Global.view.Modal
+     * base modal class of view
+     * @extend Global.view.Base
      */
     Global.define('Global.view.Modal',{
 
-        extend: Global.core.ManipulateDomClass,
+        extend: Global.view.Base,
 
+        /**
+         * @cfg {Boolean} whether modal is centered or not
+         */
         centerd: true,
 
+        /**
+         * @cfg {String} css class which is added outer element of modal
+         */
         cls: null,
 
+        /**
+         * @cfg {Boolean} whether modal is hide when user click background
+         */
         hideOnMaskClick: false,
 
-        eventName: {
-            show: 'show',
-            hide: 'hide'
-        },
-
+        /**
+         * @cfg {String} template of modal's outer
+         */
         outerTpl: '<div class="g-modal <%= centerdCls %> <%= cls %>"></div>',
+        /**
+         * @cfg {String} template of modal mask(background)
+         */
         maskTpl: '<div class="g-modal__mask <%= centerdCls %> <%= cls %>"></div>',
+        /**
+         * @cfg {String} modal inner template
+         */
         tpl: [],
 
+        /**
+         * @cfg {Object} modal jquery element
+         */
         $elm: null,
 
         compiledOuterTpl: null,
         compiledMaskTpl: null,
         compiledTpl: null,
 
+        /**
+         * @constructor
+         */
         init: function(config) {
             this._super(config);
             this.compiledOuterTpl = this._getCompiledOuterTpl();
@@ -1551,6 +1785,10 @@
             this.compiledTpl = this._getCompiledTpl();
         },
 
+        /**
+         * @method
+         * show modal
+         */
         show: function(config){
             var tplData =this._getTplData(config),
                 $elm, $mask, $body;
@@ -1562,7 +1800,7 @@
             this._create(tplData);
             this._setElmCaches(this.getRefs());
             this._applyEvents(this.getEvents());
-            
+
             $elm = this.$elm;
             $mask = this.$mask;
             $body = $(document.body);
@@ -1576,6 +1814,10 @@
             this.dispatchEvent(this.getEventName().show);
         },
 
+        /**
+         * @method
+         * @private
+         */
         _create: function(tplData){
             var compiledOuterTpl = this.getCompiledOuterTpl(),
                 compiledMaskTpl = this.getCompiledMaskTpl(),
@@ -1600,6 +1842,10 @@
             }
         },
 
+        /**
+         * @method
+         * @private
+         */
         _bindMaskClickHide: function($mask){
             var me = this;
             $mask.on('click', function(){
@@ -1607,6 +1853,10 @@
             });
         },
 
+        /**
+         * @method
+         * @private
+         */
         _bindMaskClickNone: function($mask){
             $mask.on('click', function(e){
                 e.preventDefault();
@@ -1614,11 +1864,19 @@
             });
         },
 
+        /**
+         * @method
+         * @private
+         */
         _getTplData: function(config){
             var modalTplData = this._getModalTplData();
             return $.extend(true, {}, modalTplData, config);
         },
 
+        /**
+         * @method
+         * hide modal
+         */
         hide:function(){
             this.$elm.hide();
             this.$elm.remove();
@@ -1631,18 +1889,34 @@
             this.dispatchEvent(this.getEventName().hide);
         },
 
+        /**
+         * @method
+         * @private
+         */
         _getCompiledOuterTpl: function(){
             return _.template(this.getOuterTpl());
         },
 
+        /**
+         * @method
+         * @private
+         */
         _getCompiledMaskTpl: function(){
             return _.template(this.getMaskTpl());
         },
 
+        /**
+         * @method
+         * @private
+         */
         _getCompiledTpl: function(){
             return _.template(this.getTpl());
         },
 
+        /**
+         * @method
+         * @private
+         */
         _getModalTplData: function(){
             var cls = this.getCls() ? this.getCls() : '',
                 centerdCls= this.getCenterd() ? 'g-modal--centerd' : '';
@@ -1675,13 +1949,13 @@
 
     /**
      * @class Global.app.Router
+     * Routing logic according to url pathname
      * @extend Global.core.BaseClass
      */
     Global.define('Global.app.Router',{
 
         /**
-         * routing
-         * @cfg {Object} path and controller class
+         * @cfg {Object} routingpath and controller class
          *
          *     routing: {
          *         '/'    : App.controller.Main,
@@ -1692,8 +1966,7 @@
         },
 
         /**
-         * controllers
-         * @cfg {Object} cache controller instance
+         * @cfg {Object} controllers cache controller instance
          */
         controllers: {
         },
@@ -1701,28 +1974,39 @@
 
         /**
          * @method start
+         * make controller instance according to current pathname
          * start routing.
          */
         start: function() {
             var pathName = location.pathname,
                 routing  = this.getRouting(),
                 Klass    = this._getController(pathName, routing),
-                instance = Klass ? new Klass() : undefined;
-            Klass = instance;
-            this.controllers[pathName] = instance;
+                instance = Klass ? new Klass() : undefined,
+                key = this._getNoLastSlashPath(pathName);
+            this.controllers[key] = instance;
         },
 
         /**
          * @method
+         * @private
          */
         _getController: function(path, routing){
             var pattern = /\/$/,
                 hasLastSlash = pattern.test(path) ? path : path + '/',
-                noLastSlash  = pattern.test(path) ? path.slice(0, -1) : path,
+                noLastSlash  = this._getNoLastSlashPath(path),
                 hasLastSlashClass = routing[hasLastSlash],
                 noLastSlashClass = routing[noLastSlash];
 
             return hasLastSlashClass ? hasLastSlashClass : noLastSlashClass;
+        },
+
+        /**
+         * @method
+         * @private
+         */
+        _getNoLastSlashPath: function(path){
+            var reg = /\/$/;
+            return reg.test(path) ? path.slice(0, -1) : path;
         }
 
     });
