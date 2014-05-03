@@ -25,7 +25,7 @@
         proxy : Global.data.proxy.Proxy,
 
         /**
-         * @cfg {Object} request settings of $.ajax method
+         * @cfg {Object} requestSettings request settings of $.ajax method
          *
          *      requestSettings: {
          *          GET: {
@@ -42,7 +42,7 @@
         },
 
         /**
-         * @cfg {Object} request parameter of $.ajax({data: {}})
+         * @cfg {Object} requestParam request parameter of $.ajax({data: {}})
          *
          *      requestParam: {
          *          GET: {},
@@ -56,7 +56,7 @@
         },
 
         /**
-         * @cfg {Object|String} data of response
+         * @cfg {Object|String} data data of response
          */
         data: null,
 

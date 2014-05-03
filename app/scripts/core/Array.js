@@ -111,31 +111,13 @@
         },
 
         /**
-         * @method getRandomNumList
-         * @param {Number} length length of random list
-         */
-        getRandomNumList: function(length){
-            var i, j, tmp, random = new Array(length);
-            random[0] = 0;
-
-            for(i = length - 1; i > 0; i--){
-                j = Math.floor(Math.random() * (i+1));
-                tmp = random[i] || i;
-                random[i] = random[j] || j;
-                random[j] = tmp;
-            }
-
-            return random;
-        },
-
-        /**
          * @method makeRandomList
          * @param {Array} list to make ramdom
          * @param {Number} num length of new ramdom list. default: length of list
          */
         makeRandomList: function(list, num) {
             var _num = num || list.length,
-                randoms = this.getRandomNumList(_num),
+                randoms = Global.math.Random.getRandomNumList(_num),
             res = [];
             Global.Array.each(randoms, function(index, random) {
                 res.push(list[random]);

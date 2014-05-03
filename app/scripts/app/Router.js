@@ -9,8 +9,7 @@
     Global.define('Global.app.Router',{
 
         /**
-         * routing
-         * @cfg {Object} path and controller class
+         * @cfg {Object} routingpath and controller class
          *
          *     routing: {
          *         '/'    : App.controller.Main,
@@ -21,8 +20,7 @@
         },
 
         /**
-         * controllers
-         * @cfg {Object} cache controller instance
+         * @cfg {Object} controllers cache controller instance
          */
         controllers: {
         },

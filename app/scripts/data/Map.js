@@ -9,7 +9,7 @@
         singleton: true,
 
         /**
-         * @private list2Map
+         * @method list2Map
          * convert list to Map
          * @param  {Array} data to be converted
          * @param  {String} key object key
