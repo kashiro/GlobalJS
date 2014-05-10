@@ -26,6 +26,7 @@
         "app/scripts/util/PreLoad.js",
         "app/scripts/util/SpriteSheet.js",
         "app/scripts/util/RequestAnimationFrame.js",
+        "app/scripts/util/windowScrollEventer.js",
 
         "app/scripts/media/video/YouTubeEmbed.js",
 
