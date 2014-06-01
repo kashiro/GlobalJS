@@ -8,7 +8,7 @@
 
         extend: Global.core.ObservableClass,
 
-        EVENT_NAME: {
+        eventName: {
             /**
              * @event load
              * Fired when data is loaded
@@ -16,11 +16,28 @@
              * @param {String} eventName this event name.
              * @param {Object} data data of this event.
              */
-            LOAD: 'load'
+            LOAD: 'load',
+            /**
+             * @event error
+             * Fired when reqesting is failed
+             * @param {Global.data.model.Model} target this class.
+             * @param {String} eventName this event name.
+             */
+            ERROR: 'error'
         },
 
         /**
-         * @cfg {Global.data.proxy.Proxy} Proxy
+         * @cfg {Boolean} isGetCurrentTime whether server get time in xhr or not.
+         */
+        isGetCurrentTime: false,
+
+        /**
+         * @cfg {Date} currentTime current time based on http header when you request
+         */
+        currentTime: null,
+
+        /**
+         * @cfg {Global.data.proxy.Proxy} proxy
          */
         proxy : Global.data.proxy.Proxy,
 
@@ -88,14 +105,15 @@
                 dfd = $.Deferred(),
                 ajaxDfd = this.proxy.get(param);
 
-            ajaxDfd.done(function(e){
-                me._onSuccess(e);
-                dfd.resolve(e);
-                me.dispatchEvent(me.EVENT_NAME.LOAD, e);
+            ajaxDfd.done(function(e, state, xhr){
+                me._onSuccess(e, state, xhr);
+                dfd.resolve(e, state, xhr);
+                me.dispatchEvent(me.eventName.LOAD, e);
             });
 
-            ajaxDfd.fail(function(e){
-                dfd.reject(e);
+            ajaxDfd.fail(function(e, state, xhr){
+                dfd.reject(e, state, xhr);
+                me.dispatchEvent(me.eventName.ERROR, e);
             });
 
             return dfd.promise();
@@ -118,11 +136,22 @@
          * @method
          * @private
          */
-        _onSuccess: function(data){
-            var _data = this._modifyData(data);
+        _onSuccess: function(e, state, xhr){
+            var time = xhr ? xhr.getResponseHeader('Date') : undefined;
+            this._setCurrentTime(time);
 
+            var _data = this._modifyData(e);
             this.setData(_data);
-            this.dispatchEvent(this.EVENT_NAME.LOAD, _data);
+        },
+
+        /**
+         * @method
+         * @private
+         */
+        _setCurrentTime: function(time) {
+            if(this.getIsGetCurrentTime() && time){
+                this.setCurrentTime(new Date(time));
+            }
         },
 
         /**
