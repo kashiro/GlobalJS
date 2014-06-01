@@ -28,21 +28,25 @@
          */
         get: function(param){
             var me = this,
+                args,
                 dfd = $.Deferred();
 
             if(me.getSingleRequest() &&  me.getIsRequesting()){
+                dfd.resolve.apply(dfd, [{}, 'error']);
                 return;
             }
 
             me.setIsRequesting(true);
             $.ajax(param)
-                .done(function(e){
+                .done(function(){
+                    args = Global.Array.args2Array(arguments);
                     me.setIsRequesting(false);
-                    dfd.resolve(e);
+                    dfd.resolve.apply(dfd, args);
                 })
-                .fail(function(e){
+                .fail(function(){
+                    args = Global.Array.args2Array(arguments);
                     me.setIsRequesting(false);
-                    dfd.reject(e);
+                    dfd.reject.apply(dfd, args);
                 });
 
             return dfd.promise();

@@ -27,14 +27,10 @@ describe('Test for data/Model.js', function () {
 
     describe('#_onSuccess', function(){
         it('set data in prop and resolve defferred', function(){
-            var spy = sinon.spy(inst, 'dispatchEvent'),
-                res = {test: 'test'};
+            var res = {test: 'test'};
 
             inst._onSuccess(res);
-            expect(spy.calledWith('load', res)).to.be.ok();
             expect(inst.data).to.equal(res);
-
-            spy.restore();
         });
     });
 
