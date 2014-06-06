@@ -10,7 +10,7 @@
 
         extend: Global.core.ObservableClass,
 
-        EVENT_NAME: {
+        eventName: {
             /**
              * @event start
              * Fired when this animation is started
@@ -20,7 +20,7 @@
              * @param {Number} data.time current time
              * @param {Number} data.value current value
              */
-            START: 'start',
+            start: 'start',
             /**
              * @event step
              * Fired when each step
@@ -30,7 +30,7 @@
              * @param {Number} data.time current time
              * @param {Number} data.value current value
              */
-            STEP : 'step',
+            step : 'step',
             /**
              * @event end
              * Fired when this animation is ended
@@ -40,31 +40,74 @@
              * @param {Number} data.time current time
              * @param {Number} data.value current value
              */
-            END  : 'end'
+            end  : 'end'
         },
 
+        /**
+         * @cfg {Global.animation.Easing} easingfn easing function class
+         */
         easingFn: Global.animation.Easing,
 
+        /**
+         * @cfg {String|Function} easing name of {@link Global.animation.Easing Easing class} or easing class which get following paramter
+         *
+         *     - t : current time
+         *     - b : begInnIng value
+         *     - c : change In value
+         *     - d : duration
+         */
         easing: 'linear',
 
+        /**
+         * @private
+         * @cfg {Function} stepfn easing function
+         */
         stepFn: null,
 
+        /**
+         * @cfg {Number} fps easing fps (defalut : 60)
+         */
         fps: 60,
 
+        /**
+         * cfg {Number} from beginning value
+         */
         from: 0,
 
+        /**
+         * cfg {Number} to goal value
+         */
         to: 0,
 
+        /**
+         * cfg {Number} duration duration of easing
+         */
         duration: 0,
 
+        /**
+         * @private
+         * @cfg {Number} speed
+         */
         speed: 0,
 
-        now: null,
+        /**
+         * @cfg {Number} startTime milliseconds when easing is started
+         */
+        startTime: null,
 
-        value: null,
+        /**
+         * @cfg {Number} value value to change by easing
+         */
+        value: 0,
 
+        /**
+         * @cfg {Number} currentTime milliseconds of elapsed time
+         */
         currentTime: null,
 
+        /**
+         * @private
+         */
         id: null,
 
         /**
@@ -82,48 +125,71 @@
             this._setEasing(this.getEasing());
         },
 
+        /*
+         * @method start
+         * start easing
+         */
         start: function() {
             var me = this,
                 fn = me.getStepFn(),
                 to = me.getTo(),
                 from = me.getFrom(),
-                now = me.getNow(),
+                startTime = me.getStartTime(),
                 speed = me.getSpeed(),
                 duration = me.getDuration(),
-                value = null,
-                t;
+                value = null;
 
-            this.setNow(new Date().getTime());
+            startTime = new Date().getTime();
+            this.setStartTime(startTime);
+            me.dispatchEvent(me.eventName.start, {time: undefined, value: undefined});
 
             (function loop() {
-                if (from < to) {
+                value = me.getValue();
+                if (value < to) {
                     me.setId(setTimeout(loop, speed));
                 }else{
-                    me.dispatchEvent(me.EVENT_NAME.END, {time: t, value: value});
+                    me.dispatchEvent(me.eventName.end, {time: me.getCurrentTime(), value: value});
                 }
-
-                t = new Date().getTime()-now;
-                me.setCurrentTime(t);
-
-                value = fn(t, from, to, duration);
-                me.setValue(value);
-
-                me.dispatchEvent(me.EVENT_NAME.STEP, {time: t, value: value});
-
+                me._doStart(startTime, from, to, duration, fn);
             }());
         },
 
+        /**
+         * @method 
+         * @private
+         */
+        _doStart: function(startTime, from, to, duration, fn) {
+            var t = new Date().getTime()-startTime,
+                value;
+            this.setCurrentTime(t);
+
+            value = fn(t, from, to, duration);
+            this.setValue(value);
+
+            this.dispatchEvent(this.eventName.step, {time: t, value: value});
+        },
+
+        /**
+         * @method stop
+         * stop easing
+         */
         stop: function() {
             var id = this.getId();
             window.clearTimeout(id);
         },
 
+        /**
+         * @method cancel
+         * cancel easing
+         */
         cancel: function() {
+            var value = this.getValue(),
+                currentTime = this.getCurrentTime();
             this.stop();
             this.setCurrentTime(null);
             this.setValue(null);
             this.setId(null);
-            this.dispatchEvent(this.EVENT_NAME.END, {time: this.getCurrentTime(), value: this.getValue()});
+            this.dispatchEvent(this.eventName.end, {time: currentTime, value: value});
         },
 
         /*
