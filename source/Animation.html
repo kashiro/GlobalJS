@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function(){
+    &#39;use strict&#39;;
+
+<span id='Global-animation-Animation'>    /**
+</span>     * @class Global.animation.Animation
+     * This is animation class
+     * @extend Global.core.ObservableClass
+     */
+    Global.define(&#39;Global.animation.Animation&#39;,{
+
+        extend: Global.core.ObservableClass,
+
+        eventName: {
+<span id='Global-animation-Animation-event-start'>            /**
+</span>             * @event start
+             * Fired when this animation is started
+             * @param {Global.animation.Animation} target this class.
+             * @param {String} eventName this event name.
+             * @param {Object} data data of this event.
+             * @param {Number} data.time current time
+             * @param {Number} data.value current value
+             */
+            start: &#39;start&#39;,
+<span id='Global-animation-Animation-event-step'>            /**
+</span>             * @event step
+             * Fired when each step
+             * @param {Global.animation.Animation} target this class.
+             * @param {String} eventName this event name.
+             * @param {Object} data data of this event.
+             * @param {Number} data.time current time
+             * @param {Number} data.value current value
+             */
+            step : &#39;step&#39;,
+<span id='Global-animation-Animation-event-end'>            /**
+</span>             * @event end
+             * Fired when this animation is ended
+             * @param {Global.animation.Animation} target this class.
+             * @param {String} eventName this event name.
+             * @param {Object} data data of this event.
+             * @param {Number} data.time current time
+             * @param {Number} data.value current value
+             */
+            end  : &#39;end&#39;
+        },
+
+<span id='Global-animation-Animation-cfg-easingfn'>        /**
+</span>         * @cfg {Global.animation.Easing} easingfn easing function class
+         */
+        easingFn: Global.animation.Easing,
+
+<span id='Global-animation-Animation-cfg-easing'>        /**
+</span>         * @cfg {String|Function} easing name of {@link Global.animation.Easing Easing class} or easing class which get following paramter
+         *
+         *     - t : current time
+         *     - b : begInnIng value
+         *     - c : change In value
+         *     - d : duration
+         */
+        easing: &#39;linear&#39;,
+
+<span id='Global-animation-Animation-cfg-stepfn'>        /**
+</span>         * @private
+         * @cfg {Function} stepfn easing function
+         */
+        stepFn: null,
+
+<span id='Global-animation-Animation-cfg-fps'>        /**
+</span>         * @cfg {Number} fps easing fps (defalut : 60)
+         */
+        fps: 60,
+
+<span id='Global-animation-Animation-property-from'>        /**
+</span>         * cfg {Number} from beginning value
+         */
+        from: 0,
+
+<span id='Global-animation-Animation-property-to'>        /**
+</span>         * cfg {Number} to goal value
+         */
+        to: 0,
+
+<span id='Global-animation-Animation-property-duration'>        /**
+</span>         * cfg {Number} duration duration of easing
+         */
+        duration: 0,
+
+<span id='Global-animation-Animation-cfg-speed'>        /**
+</span>         * @private
+         * @cfg {Number} speed
+         */
+        speed: 0,
+
+<span id='Global-animation-Animation-cfg-startTime'>        /**
+</span>         * @cfg {Number} startTime milliseconds when easing is started
+         */
+        startTime: null,
+
+<span id='Global-animation-Animation-cfg-value'>        /**
+</span>         * @cfg {Number} value value to change by easing
+         */
+        value: 0,
+
+<span id='Global-animation-Animation-cfg-currentTime'>        /**
+</span>         * @cfg {Number} currentTime milliseconds of elapsed time
+         */
+        currentTime: null,
+
+<span id='Global-animation-Animation-property-id'>        /**
+</span>         * @private
+         */
+        id: null,
+
+<span id='Global-animation-Animation-method-constructor'>        /**
+</span>         * @constructor
+         * @param {Object} config of this class
+         * @param {Number} config.fps frame per second
+         * @param {Number} config.from start value
+         * @param {Number} config.to end value
+         * @param {Number} config.duration duration
+         * @param {String|Function} config.easing easing name of or easing function
+         */
+        init: function(config) {
+            this._super(config);
+            this._calcSpeed(this.getFps());
+            this._setEasing(this.getEasing());
+        },
+
+        /*
+         * @method start
+         * start easing
+         */
+        start: function() {
+            var me = this,
+                fn = me.getStepFn(),
+                to = me.getTo(),
+                from = me.getFrom(),
+                startTime = me.getStartTime(),
+                speed = me.getSpeed(),
+                duration = me.getDuration(),
+                value = null;
+
+            startTime = new Date().getTime();
+            this.setStartTime(startTime);
+            me.dispatchEvent(me.eventName.start, {time: undefined, value: undefined});
+
+            (function loop() {
+                value = me.getValue();
+                if (value &lt; to) {
+                    me.setId(setTimeout(loop, speed));
+                }else{
+                    me.dispatchEvent(me.eventName.end, {time: me.getCurrentTime(), value: value});
+                }
+                me._doStart(startTime, from, to, duration, fn);
+            }());
+        },
+
+<span id='Global-animation-Animation-method-_doStart'>        /**
+</span>         * @method 
+         * @private
+         */
+        _doStart: function(startTime, from, to, duration, fn) {
+            var t = new Date().getTime()-startTime,
+                value;
+            this.setCurrentTime(t);
+
+            value = fn(t, from, to, duration);
+            this.setValue(value);
+
+            this.dispatchEvent(this.eventName.step, {time: t, value: value});
+        },
+
+<span id='Global-animation-Animation-method-stop'>        /**
+</span>         * @method stop
+         * stop easing
+         */
+        stop: function() {
+            var id = this.getId();
+            window.clearTimeout(id);
+        },
+
+<span id='Global-animation-Animation-method-cancel'>        /**
+</span>         * @method cancel
+         * cancel easing
+         */
+        cancel: function() {
+            var value = this.getValue(),
+                currentTime = this.getCurrentTime();
+            this.stop();
+            this.setCurrentTime(null);
+            this.setValue(null);
+            this.setId(null);
+            this.dispatchEvent(this.eventName.end, {time: currentTime, value: value});
+        },
+
+        /*
+         * @method
+         * @private
+         */
+        _calcSpeed: function(fps) {
+            this.setSpeed(1000/fps);
+        },
+
+<span id='Global-animation-Animation-method-_setEasing'>        /**
+</span>         * @method
+         * @private
+         */
+        _setEasing: function(easing) {
+            var fn,
+                easingFn = this.getEasingFn();
+
+            if(Global.isFunction(easing)){
+                fn = easing;
+            }else if(Global.isString(easing)){
+                fn = easingFn[easing];
+            }
+            this.setStepFn(fn);
+        }
+
+    });
+})();
+</pre>
+</body>
+</html>
