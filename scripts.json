@@ -22,6 +22,9 @@
 
         "app/scripts/math/Random.js",
 
+        "app/scripts/animation/Easing.js",
+        "app/scripts/animation/Animation.js",
+
         "app/scripts/util/functions/Debounce.js",
         "app/scripts/util/PreLoad.js",
         "app/scripts/util/SpriteSheet.js",
