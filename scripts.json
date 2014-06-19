@@ -36,8 +36,8 @@
         "app/scripts/view/Base.js",
         "app/scripts/view/Modal.js",
 
+        "app/scripts/app/History.js",
         "app/scripts/app/Controller.js",
-
         "app/scripts/app/Router.js"
     ]
 }
