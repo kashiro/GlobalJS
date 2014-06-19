@@ -45,21 +45,25 @@
          */
         get: function(param){
             var me = this,
+                args,
                 dfd = $.Deferred();
 
             if(me.getSingleRequest() &amp;&amp;  me.getIsRequesting()){
+                dfd.resolve.apply(dfd, [{}, &#39;error&#39;]);
                 return;
             }
 
             me.setIsRequesting(true);
             $.ajax(param)
-                .done(function(e){
+                .done(function(){
+                    args = Global.Array.args2Array(arguments);
                     me.setIsRequesting(false);
-                    dfd.resolve(e);
+                    dfd.resolve.apply(dfd, args);
                 })
-                .fail(function(e){
+                .fail(function(){
+                    args = Global.Array.args2Array(arguments);
                     me.setIsRequesting(false);
-                    dfd.reject(e);
+                    dfd.reject.apply(dfd, args);
                 });
 
             return dfd.promise();

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function() {
+    &#39;use strict&#39;;
+
+<span id='Global-app-History'>    /**
+</span>     * @class Global.app.History
+     * HTML5 History API utility.
+     * if the API dose not supported this class use hash flagment.
+     * @extend Global.core.ObservableClass
+     */
+    Global.define(&#39;Global.app.History&#39;,{
+
+        singleton: true,
+
+        extend: Global.core.ObservableClass,
+
+        eventName: {
+            change: &#39;change&#39;
+        },
+
+<span id='Global-app-History-cfg-isSupported'>        /**
+</span>         * @cfg {Boolean} isSupported whether browser spport History API or not
+         */
+        isSupported: history &amp;&amp; !!history.pushState,
+
+<span id='Global-app-History-cfg-data'>        /**
+</span>         * @cfg {Object} data
+         */
+        data: null,
+
+<span id='Global-app-History-cfg-hashextention'>        /**
+</span>         * @cfg {String} hashextention /# + ${hashextention} 
+         */
+        hashExtention: &#39;!/&#39;,
+
+<span id='Global-app-History-method-state'>        /**
+</span>         * @method state
+         * get state data
+         * @public
+         */
+        state: function() {
+            return this.getData();
+        },
+
+<span id='Global-app-History-method-length'>        /**
+</span>         * @method length
+         * get state length
+         * @public
+         */
+        length: function() {
+            return this.isSupported ? history.length : null;
+        },
+
+<span id='Global-app-History-method-constructor'>        /**
+</span>         * @constructor
+         */
+        init: function(config) {
+            this._super(config);
+            this._bind();
+        },
+
+<span id='Global-app-History-method-pushState'>        /**
+</span>         * @method pushState
+         * change url
+         * if History API dose not supported use change hash flagment
+         * @public
+         */
+        pushState: function(path, state, title) {
+            var he = this.getHashExtention();
+            this.setData(state);
+            if(this.isSupported){
+                history.pushState(state, title, path);
+                this._onPopState();
+            }else{
+                location.hash = he + path;
+            }
+        },
+
+<span id='Global-app-History-method-forward'>        /**
+</span>         * @method forward
+         * same as history.forward()
+         * @public
+         */
+        forward: function() {
+            history.forward();
+        },
+
+<span id='Global-app-History-method-back'>        /**
+</span>         * @method back
+         * same as history.back()
+         * @public
+         */
+        back: function() {
+            history.back();
+        },
+
+<span id='Global-app-History-method-go'>        /**
+</span>         * @method go
+         * same as history.go()
+         * @public
+         */
+        go: function() {
+            history.back();
+        },
+
+<span id='Global-app-History-method-_bind'>        /**
+</span>         * @private
+         */
+        _bind: function() {
+            if(this.isSupported){
+                window.addEventListener(&#39;popstate&#39;, Global.Functions.bind(this._onPopState, this));
+            }else{
+                this._bindHashChange();
+            }
+        },
+
+<span id='Global-app-History-method-_bindHashChange'>        /**
+</span>         * @private
+         */
+        _bindHashChange: function() {
+            var key = window.addEventListener ? &#39;addEventListener&#39; : &#39;attachEvent&#39;;
+            window[key](&#39;hashchange&#39;, Global.Functions.bind(this._onPopState, this));
+        },
+
+<span id='Global-app-History-method-_onPopState'>        /**
+</span>         * @private
+         */
+        _onPopState: function(e) {
+            var data = {
+                state: this.state(),
+                raw : e
+            };
+            this.dispatchEvent(this.getEventName().change, data);
+        }
+
+    });
+
+})();
+</pre>
+</body>
+</html>

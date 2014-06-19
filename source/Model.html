@@ -25,7 +25,7 @@
 
         extend: Global.core.ObservableClass,
 
-        EVENT_NAME: {
+        eventName: {
 <span id='Global-data-model-Model-event-load'>            /**
 </span>             * @event load
              * Fired when data is loaded
@@ -33,11 +33,28 @@
              * @param {String} eventName this event name.
              * @param {Object} data data of this event.
              */
-            LOAD: &#39;load&#39;
+            LOAD: &#39;load&#39;,
+<span id='Global-data-model-Model-event-error'>            /**
+</span>             * @event error
+             * Fired when reqesting is failed
+             * @param {Global.data.model.Model} target this class.
+             * @param {String} eventName this event name.
+             */
+            ERROR: &#39;error&#39;
         },
 
-<span id='Global-data-model-Model-cfg-Proxy'>        /**
-</span>         * @cfg {Global.data.proxy.Proxy} Proxy
+<span id='Global-data-model-Model-cfg-isGetCurrentTime'>        /**
+</span>         * @cfg {Boolean} isGetCurrentTime whether server get time in xhr or not.
+         */
+        isGetCurrentTime: false,
+
+<span id='Global-data-model-Model-cfg-currentTime'>        /**
+</span>         * @cfg {Date} currentTime current time based on http header when you request
+         */
+        currentTime: null,
+
+<span id='Global-data-model-Model-cfg-proxy'>        /**
+</span>         * @cfg {Global.data.proxy.Proxy} proxy
          */
         proxy : Global.data.proxy.Proxy,
 
@@ -105,14 +122,15 @@
                 dfd = $.Deferred(),
                 ajaxDfd = this.proxy.get(param);
 
-            ajaxDfd.done(function(e){
-                me._onSuccess(e);
-                dfd.resolve(e);
-                me.dispatchEvent(me.EVENT_NAME.LOAD, e);
+            ajaxDfd.done(function(e, state, xhr){
+                me._onSuccess(e, state, xhr);
+                dfd.resolve(e, state, xhr);
+                me.dispatchEvent(me.eventName.LOAD, e);
             });
 
-            ajaxDfd.fail(function(e){
-                dfd.reject(e);
+            ajaxDfd.fail(function(e, state, xhr){
+                dfd.reject(e, state, xhr);
+                me.dispatchEvent(me.eventName.ERROR, e);
             });
 
             return dfd.promise();
@@ -135,11 +153,22 @@
 </span>         * @method
          * @private
          */
-        _onSuccess: function(data){
-            var _data = this._modifyData(data);
+        _onSuccess: function(e, state, xhr){
+            var time = xhr ? xhr.getResponseHeader(&#39;Date&#39;) : undefined;
+            this._setCurrentTime(time);
 
+            var _data = this._modifyData(e);
             this.setData(_data);
-            this.dispatchEvent(this.EVENT_NAME.LOAD, _data);
+        },
+
+<span id='Global-data-model-Model-method-_setCurrentTime'>        /**
+</span>         * @method
+         * @private
+         */
+        _setCurrentTime: function(time) {
+            if(this.getIsGetCurrentTime() &amp;&amp; time){
+                this.setCurrentTime(new Date(time));
+            }
         },
 
 <span id='Global-data-model-Model-method-_modifyData'>        /**
