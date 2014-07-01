@@ -9,6 +9,8 @@ mixin ogp(data)
     - var locale = '';
     if (!data.locale)
         - locale = 'ja_JP'
+    else
+        - locale = data.locale
 
     meta(property='og:locale', content='#{locale}')
     meta(property='og:title', content='#{data.title}')
