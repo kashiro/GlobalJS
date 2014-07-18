@@ -95,7 +95,7 @@
          * @private
          */
         _countUp: function(count){
-            this.count = (1+count) % (this.classList.length + 1);
+            this.count = (1+count) % (this.classList.length);
             this.totalCount = ++this.totalCount;
         },
 
