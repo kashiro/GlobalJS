@@ -57,14 +57,11 @@ describe('Test for util/SpriteSheet.js', function () {
             expect(inst.count).to.equal(2);
             inst._countUp(2);
             expect(inst.count).to.equal(3);
-            inst._countUp(3);
-            expect(inst.count).to.equal(4);
-
             // reset count
-            inst._countUp(4);
+            inst._countUp(3);
             expect(inst.count).to.equal(0);
 
-            expect(inst.totalCount).to.equal(5);
+            expect(inst.totalCount).to.equal(4);
         });
     });
     describe('#_getClass', function () {
