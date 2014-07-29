@@ -1,6 +1,6 @@
 {
   "name": "GlobalJS",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "dependencies": {},
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -30,7 +30,7 @@
     "karma-mocha": "*",
     "grunt-jsduck": "~1.0.0",
     "jshint-stylish": "~0.1.5",
-    "grunt-contrib-jade" : "~0.10.0"
+    "grunt-contrib-jade": "~0.10.0"
   },
   "engines": {
     "node": ">=0.11.0"
