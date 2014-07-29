@@ -37,6 +37,7 @@
         /**
          * @method state
          * get state data
+         * @public
          */
         state: function() {
             return this.getData();
@@ -45,6 +46,7 @@
         /**
          * @method length
          * get state length
+         * @public
          */
         length: function() {
             return this.isSupported ? history.length : null;
@@ -69,6 +71,7 @@
          * @method pushState
          * change url
          * if History API dose not supported use change hash flagment
+         * @public
          */
         pushState: function(path, state, title) {
             var _path;
@@ -85,6 +88,7 @@
         /**
          * @method forward
          * same as history.forward()
+         * @public
          */
         forward: function() {
             history.forward();
@@ -93,6 +97,7 @@
         /**
          * @method back
          * same as history.back()
+         * @public
          */
         back: function() {
             history.back();
@@ -101,6 +106,7 @@
         /**
          * @method go
          * same as history.go()
+         * @public
          */
         go: function() {
             history.go();
@@ -111,6 +117,7 @@
          * if your browser support history api return pathname from location.pathname
          * if your browser dose not supported history api return pathname from location.hash
          * the return path have slash at first child and dose not have slash at last child.
+         * @public
          */
         getNormalizePath: function() {
             var res;
@@ -124,6 +131,7 @@
 
         /**
          * @method getPathName
+         * @public
          * @return pathname which has slash at first child and excluding default pathname
          */
         getPathName: function() {
@@ -135,6 +143,7 @@
 
         /**
          * @method getHash
+         * @public
          * @return pathname which has slash at first child and excluding hash extention (e.g. !#/)
          */
         getHash: function() {

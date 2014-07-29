@@ -29,6 +29,7 @@
         "xit"      : true,
         "beforeEach": true,
         "afterEach" : true,
-        "Class"     : true
+        "Class"     : true,
+        "Sample"    : true
     }
 }

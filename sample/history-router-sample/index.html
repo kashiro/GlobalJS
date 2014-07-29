@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://www.facebook.com/2008/fbml">
+  <head>
+    <meta charset="utf-8"><!--[if IE]>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+    <title>History router sample</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/><!--[if lt IE 9]>
+    <script src="bower_components/html5shiv/dist/html5shiv.js"></script><![endif]-->
+    <!-- build:css({.tmp,app}) styles/main.css-->
+    <!-- endbuild-->
+  </head>
+  <body>
+    <div class="content">
+      <div class="viewport">
+        <h1>This is <span class="pagename"></span></h1>
+        <button class="page1">page 1</button>
+        <button class="page2">page 2</button>
+        <button class="page3">page 3</button>
+      </div>
+    </div>
+    <!-- build:js(app) scripts/vendor.js-->
+    <script src="../app/bower_components/jquery/jquery.min.js"></script>
+    <!-- endbuild-->
+    <!-- build:js({app,.tmp}) scripts/main.js-->
+    <script src="../app/scripts/lib/Class.js"></script>
+    <script src="../app/scripts/core/Global.js"></script>
+    <script src="../app/scripts/core/BaseClass.js"></script>
+    <script src="../app/scripts/event/Event.js"></script>
+    <script src="../app/scripts/event/EventDispatcher.js"></script>
+    <script src="../app/scripts/core/ObservableClass.js"></script>
+    <script src="../app/scripts/core/ManipulateDomClass.js"></script>
+    <script src="../app/scripts/core/Array.js"></script>
+    <script src="../app/scripts/core/Functions.js"></script>
+    <script src="../app/scripts/data/Map.js"></script>
+    <script src="../app/scripts/data/proxy/Proxy.js"></script>
+    <script src="../app/scripts/data/model/Model.js"></script>
+    <script src="../app/scripts/math/Random.js"></script>
+    <script src="../app/scripts/animation/Easing.js"></script>
+    <script src="../app/scripts/animation/Animation.js"></script>
+    <script src="../app/scripts/util/functions/Debounce.js"></script>
+    <script src="../app/scripts/util/PreLoad.js"></script>
+    <script src="../app/scripts/util/SpriteSheet.js"></script>
+    <script src="../app/scripts/util/RequestAnimationFrame.js"></script>
+    <script src="../app/scripts/util/windowScrollEventer.js"></script>
+    <script src="../app/scripts/media/video/YouTubeEmbed.js"></script>
+    <script src="../app/scripts/view/Base.js"></script>
+    <script src="../app/scripts/view/Modal.js"></script>
+    <script src="../app/scripts/app/History.js"></script>
+    <script src="../app/scripts/app/Controller.js"></script>
+    <script src="../app/scripts/app/Router.js"></script>
+    <script src="../app/scripts/app/HistoryRouter.js"></script>
+    <script src="../app/jade/sample/history-router-sample/Top.js"></script>
+    <script src="../app/jade/sample/history-router-sample/Page1.js"></script>
+    <script src="../app/jade/sample/history-router-sample/Page2.js"></script>
+    <script src="../app/jade/sample/history-router-sample/Page3.js"></script>
+    <script src="../app/jade/sample/history-router-sample/Router.js"></script>
+    <script src="../app/jade/sample/history-router-sample/main.js"></script>
+    <!-- endbuild-->
+  </body>
+</html>
