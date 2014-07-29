@@ -8,14 +8,7 @@
      */
     Global.define('Global.app.Controller',{
 
-        extend: Global.core.ManipulateDomClass,
-
-        /**
-         * @method restart
-         * if you use HistoryRouter this method is called in second time.
-         */
-        restart: function() {
-        }
+        extend: Global.core.ManipulateDomClass
 
     });
 })();

@@ -33,7 +33,8 @@ module.exports = function (grunt) {
             // Configurable paths
             app : 'app',
             docs: 'docs',
-            dist: 'dist'
+            dist: 'dist',
+            sample: 'sample'
         },
 
         // Watches files for changes and runs tasks based on the changed files
@@ -42,24 +43,28 @@ module.exports = function (grunt) {
                 files: [
                     '<%= yeoman.app %>/scripts/**/*.js'
                 ],
-                tasks: ['jshint']
+                tasks: ['jshint', 'copy:sample']
             },
-            jstest: {
-                files: ['test/spec/**/*.js'],
-                tasks: ['test'],
-                options: {
-                    livereload: true
-                }
+            jade: {
+                files: [ '<%= yeoman.app %>/jade/**/*.jade'],
+                tasks: ['jade:server']
             },
-            docs: {
-                files: [
-                    '<%= yeoman.app %>/scripts/**/*.js'
-                ],
-                tasks: ['docs'],
-                options: {
-                    livereload: true
-                }
-            },
+            //jstest: {
+            //    files: ['test/spec/**/*.js'],
+            //    tasks: ['test'],
+            //    options: {
+            //        livereload: true
+            //    }
+            //},
+            //docs: {
+            //    files: [
+            //        '<%= yeoman.app %>/scripts/**/*.js'
+            //    ],
+            //    tasks: ['docs'],
+            //    options: {
+            //        livereload: true
+            //    }
+            //},
             gruntfile: {
                 files: ['Gruntfile.js']
             },
@@ -85,7 +90,8 @@ module.exports = function (grunt) {
                 options: {
                     open: true,
                     base: [
-                        '<%= yeoman.docs %>'
+                        //'<%= yeoman.docs %>'
+                        '<%= yeoman.sample %>'
                     ]
                 }
             }
@@ -169,6 +175,41 @@ module.exports = function (grunt) {
             }
         },
 
+        jade: {
+            options: {
+                pretty: true,
+                data: {
+                    scripts: scriptsSettings
+                },
+                basedir: '<%= yeoman.app %>/jade'
+            },
+            server: {
+                files: [{
+                    expand: true,
+                    cwd: '<%= yeoman.app %>/jade/sample',
+                    src: '**/!(_)*.jade',
+                    dest: '<%= yeoman.sample %>',
+                    ext: '.html'
+                }]
+            }
+        },
+
+        copy: {
+            sample: {
+                files: [{
+                    expand: true,
+                    dot: true,
+                    cwd: '<%= yeoman.app %>',
+                    dest:'<%= yeoman.sample %>/app',
+                    src: [
+                        'bower_components/**/**',
+                        'scripts/**/**/*.js',
+                        'jade/sample/**/**/*.js'
+                    ]
+                }]
+            }
+        },
+
         concat: {
             dist: {
                 src: scriptsSettings.app,
@@ -192,8 +233,9 @@ module.exports = function (grunt) {
         }
 
         grunt.task.run([
-            'docs',
             'connect:livereload',
+            'jade',
+            'copy:sample',
             'watch'
         ]);
     });

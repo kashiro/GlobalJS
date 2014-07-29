@@ -1808,7 +1808,7 @@
          * @private
          */
         _countUp: function(count){
-            this.count = (1+count) % (this.classList.length + 1);
+            this.count = (1+count) % (this.classList.length);
             this.totalCount = ++this.totalCount;
         },
 
@@ -2446,9 +2446,11 @@
      */
     Global.define('Global.app.History',{
 
-        singleton: true,
-
         extend: Global.core.ObservableClass,
+
+        defaultPathName: '/',
+
+        changeHash: false,
 
         eventName: {
             change: 'change'
@@ -2465,14 +2467,13 @@
         data: null,
 
         /**
-         * @cfg {String} hashextention /# + ${hashextention} 
+         * @cfg {String} hashextention /# + ${hashextention}
          */
         hashExtention: '!/',
 
         /**
          * @method state
          * get state data
-         * @public
          */
         state: function() {
             return this.getData();
@@ -2481,7 +2482,6 @@
         /**
          * @method length
          * get state length
-         * @public
          */
         length: function() {
             return this.isSupported ? history.length : null;
@@ -2492,30 +2492,36 @@
          */
         init: function(config) {
             this._super(config);
+            this._setUseHash(config.useHash);
             this._bind();
+        },
+
+        _setUseHash: function(useHash) {
+            if(useHash){
+                this.isSupported = false;
+            }
         },
 
         /**
          * @method pushState
          * change url
          * if History API dose not supported use change hash flagment
-         * @public
          */
         pushState: function(path, state, title) {
-            var he = this.getHashExtention();
+            var _path;
             this.setData(state);
             if(this.isSupported){
-                history.pushState(state, title, path);
-                this._onPopState();
+                _path = this.getDefaultPathName() + path;
+                history.pushState(state, title, _path);
             }else{
-                location.hash = he + path;
+                this.setChangeHash(true);
+                location.hash = this._getHashByPathName(path);
             }
         },
 
         /**
          * @method forward
          * same as history.forward()
-         * @public
          */
         forward: function() {
             history.forward();
@@ -2524,7 +2530,6 @@
         /**
          * @method back
          * same as history.back()
-         * @public
          */
         back: function() {
             history.back();
@@ -2533,10 +2538,69 @@
         /**
          * @method go
          * same as history.go()
-         * @public
          */
         go: function() {
-            history.back();
+            history.go();
+        },
+
+        /**
+         * @method getNormalizePath
+         * if your browser support history api return pathname from location.pathname
+         * if your browser dose not supported history api return pathname from location.hash
+         * the return path have slash at first child and dose not have slash at last child.
+         */
+        getNormalizePath: function() {
+            var res;
+            if(this.isSupported){
+                res = this.getPathName();
+            }else{
+                res = this.getHash();
+            }
+            return res;
+        },
+
+        /**
+         * @method getPathName
+         * @return pathname which has slash at first child and excluding default pathname
+         */
+        getPathName: function() {
+            var pathName = location.pathname;
+            pathName = pathName.split(this.getDefaultPathName())[1];
+            pathName = this._addSlashAtFirst(pathName);
+            return this._getNoLastSlashPath(pathName);
+        },
+
+        /**
+         * @method getHash
+         * @return pathname which has slash at first child and excluding hash extention (e.g. !#/)
+         */
+        getHash: function() {
+            var hash = location.hash,
+                path = this._changeHashToPathName(hash);
+            return this._getNoLastSlashPath(path);
+        },
+
+        _changeHashToPathName: function(hash) {
+            var prefix = '#' + this.getHashExtention(),
+                pathName;
+            if(!hash){
+                pathName = '/';
+            }else{
+                pathName = hash.split(prefix)[1];
+                pathName = this._addSlashAtFirst(pathName);
+            }
+            return pathName;
+        },
+
+        _getHashByPathName: function(path) {
+            var he = this.getHashExtention(),
+                res;
+            if(path === '/'){
+                res = he;
+            }else{
+                res = he + (this._isFirstSlash(path) ? path.substring(1) : path);
+            }
+            return res;
         },
 
         /**
@@ -2554,8 +2618,14 @@
          * @private
          */
         _bindHashChange: function() {
-            var key = window.addEventListener ? 'addEventListener' : 'attachEvent';
-            window[key]('hashchange', Global.Functions.bind(this._onPopState, this));
+            var me = this,
+                key = window.addEventListener ? 'addEventListener' : 'attachEvent';
+            window[key]('hashchange', function(e) {
+                if(!me.getChangeHash()){
+                    me._onPopState(e);
+                }
+                me.setChangeHash(false);
+            });
         },
 
         /**
@@ -2567,6 +2637,32 @@
                 raw : e
             };
             this.dispatchEvent(this.getEventName().change, data);
+        },
+        _isFirstSlash: function(str) {
+            var reg = /^\//;
+            return reg.test(str);
+        },
+
+        _addSlashAtFirst: function(str) {
+            var res;
+            if(Global.isUndefined(str)){
+                res = undefined;
+            }else{
+                if(!this._isFirstSlash(str)){
+                    str  = '/' + str;
+                }
+                res = str;
+            }
+            return str;
+        },
+
+        _getNoLastSlashPath: function(path){
+            var reg = /\/$/;
+            if(path === '/'){
+                return path;
+            }else{
+                return reg.test(path) ? path.slice(0, -1) : path;
+            }
         }
 
     });
@@ -2583,7 +2679,14 @@
      */
     Global.define('Global.app.Controller',{
 
-        extend: Global.core.ManipulateDomClass
+        extend: Global.core.ManipulateDomClass,
+
+        /**
+         * @method restart
+         * if you use HistoryRouter this method is called in second time.
+         */
+        restart: function() {
+        }
 
     });
 })();
@@ -2653,5 +2756,89 @@
             return reg.test(path) ? path.slice(0, -1) : path;
         }
 
+    });
+})();
+
+(function(){
+    'use strict';
+
+    /**
+     * @class Global.app.HistoryRouter
+     * @extend Global.app.Router
+     */
+    Global.define('Global.app.HistoryRouter',{
+
+        extend: Global.app.Router,
+
+        historyCtr: null,
+
+        useHash: false,
+
+        defaultPathName: '/',
+
+        init: function(config) {
+            var me = this;
+            this._super(config);
+            this.setHistoryCtr(new Global.app.History({
+                useHash: me.getUseHash(),
+                defaultPathName: me.getDefaultPathName()
+            }));
+            this._bind();
+        },
+
+        _bind: function() {
+            this.getHistoryCtr().addEventListener('change', Global.Functions.bind(this._onChangeState, this));
+        },
+
+        _onChangeState: function() {
+            var isChangeEvent = true;
+            this.start(isChangeEvent);
+        },
+
+        /**
+         * @override
+         * @param {Boolean} isChangeEvent
+         */
+        start: function(isChangeEvent) {
+            var pathName = this.getHistoryCtr().getNormalizePath(),
+                res = this._start(pathName, isChangeEvent);
+            if(!res){
+                this._startDefault();
+            }
+        },
+
+        _startDefault: function() {
+            var pathName = this.getDefaultPathName();
+            this.changePage(pathName);
+        },
+
+        _start: function(pathName, isChangeEvent) {
+            var instance = this._getControllerInstance(pathName);
+            if(instance){
+                instance.restart();
+            }else{
+                instance = this._makeController(pathName);
+            }
+            if(!isChangeEvent && instance){
+                this.getHistoryCtr().pushState(pathName);
+            }
+            return !!instance;
+        },
+
+        _getControllerInstance: function(path){
+            return this.controllers[path];
+        },
+
+        _makeController: function(pathName) {
+            var routing  = this.getRouting(),
+                Klass    = this._getController(pathName, routing),
+                instance = Klass ? new Klass({pathKey: pathName}) : undefined;
+            this.controllers[pathName] = instance;
+            return instance;
+        },
+
+        changePage: function(pathName) {
+            this._start(pathName);
+        }
     });
 })();

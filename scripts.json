@@ -38,6 +38,7 @@
 
         "app/scripts/app/History.js",
         "app/scripts/app/Controller.js",
-        "app/scripts/app/Router.js"
+        "app/scripts/app/Router.js",
+        "app/scripts/app/HistoryRouter.js"
     ]
 }

@@ -1,0 +1,25 @@
+include /mixin/_scripts
+include /mixin/meta/_viewport
+//- include /mixin/_dnsPrefetch
+extends /extends/_application.jade
+
+block title
+    title History router sample
+block viewport
+    +viewport({ type: 'dw'})
+
+
+block body
+
+    .content
+        .viewport
+            h1 This is <span class="pagename"></span>
+            button.page1 page 1
+            button.page2 page 2
+            button.page3 page 3
+
+block vendorScripts
+    +scripts(scripts.vendor, '../')
+block appScripts
+    +scripts(scripts.app, '../')
+    +scripts(['Top.js', 'Page1.js', 'Page2.js', 'Page3.js', 'Router.js', 'main.js'], '../app/jade/sample/history-router-sample/')
