@@ -11,7 +11,7 @@
 
         extend: Global.core.ObservableClass,
 
-        defaultPathName: '/',
+        defaultPathName: '',
 
         changeHash: false,
 
@@ -55,7 +55,7 @@
          */
         init: function(config) {
             this._super(config);
-            this._setUseHash(config.useHash);
+            this._setUseHash(this.useHash);
             this._bind();
         },
 
@@ -71,10 +71,11 @@
          * if History API dose not supported use change hash flagment
          */
         pushState: function(path, state, title) {
-            var _path;
+            var _path,
+                dpn = this.getDefaultPathName();
             this.setData(state);
             if(this.isSupported){
-                _path = this.getDefaultPathName() + path;
+                _path = dpn + path;
                 history.pushState(state, title, _path);
             }else{
                 this.setChangeHash(true);
