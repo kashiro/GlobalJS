@@ -32,6 +32,7 @@
         "app/scripts/util/windowScrollEventer.js",
 
         "app/scripts/media/video/YouTubeEmbed.js",
+        "app/scripts/media/video/VideoElement.js",
 
         "app/scripts/view/Base.js",
         "app/scripts/view/Modal.js",
