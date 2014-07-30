@@ -245,7 +245,7 @@ module.exports = function (grunt) {
         grunt.task.run(['serve']);
     });
 
-    grunt.registerTask('test', ['newer:jshint', 'karma:unit']);
+    grunt.registerTask('test', ['newer:jshint', 'karma:unit', 'build']);
     grunt.registerTask('travis', ['jshint', 'karma:travis']);
 
     grunt.registerTask('build', [
