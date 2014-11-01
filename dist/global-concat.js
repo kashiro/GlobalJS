@@ -1893,62 +1893,17 @@
             jquery: 'windowscrolleventer'
         },
 
-        fn: {
-            show: function(topPosition){
-                return topPosition > 0 && topPosition < document.documentElement.clientHeight;
-            },
-            hide: function(topPosition) {
-                return topPosition < 0 || topPosition > document.documentElement.clientHeight;
-            }
-        },
-
-        targets: [],
-
-        /**
-         * @constructor
-         * @property {Object} config
-         * @property {Object} config.targets target of event listener.
-         * @property {Object} config.targets.type when the event is dispatch.
-         * @property {Object} config.targets.$elm target element.
-         * @property {Object} config.targets.name event name
-         * @property {Object} config.targets.fn judgement function when the event is dispatch
-         */
-        init: function(config) {
-            this._super(config);
-            this.setTargets(this._modifyTargets(config.targets));
+        isShown: function(top, bottom){
+            return bottom > 0 && top < document.documentElement.clientHeight;
         },
 
         /**
-         * @private
-         */
-        _modifyTargets: function(targets) {
-            var me = this,
-                list = Global.isArray(targets) ? targets : [targets],
-                res = [];
-            Global.Array.each(list, function(index, target){
-                if(target.type){
-                    target.fn = me._getFn(target.type);
-                }
-                res.push(target);
-            });
-            return res;
-        },
-
-        /**
-         * @private
-         */
-        _getFn: function(type){
-            var res,
-                fn = this.getFn();
-            if(type === 'show'){
-                res = fn.show;
-            }else if(type === 'hide'){
-                res = fn.hide;
-            }else{
-                console.error('you set unknown type.');
-            }
-            return res;
-        },
+         *
+         * @property {Object[]} config
+         * @property {Object} config.$elm target element.
+         * @property {Object} config.name event name
+        */
+        targets: null,
 
         /**
          * @method start
@@ -1969,11 +1924,15 @@
          */
         _judgeTrigger: function(targets){
             var me = this,
-                topPosition;
+                bound, top, bottom;
             Global.Array.each(targets, function(index, target) {
-                topPosition = target.$elm[0].getBoundingClientRect().top;
-                if(target.fn(topPosition)){
-                    me.dispatchEvent(target.name, {target: target});
+                bound = target.$elm[0].getBoundingClientRect();
+                top = bound.top;
+                bottom = bound.bottom;
+                if(me.isShown(top, bottom)){
+                    me.dispatchEvent(target.name + 'show', {target: target});
+                }else{
+                    me.dispatchEvent(target.name + 'hide', {target: target});
                 }
             });
         },
@@ -1989,7 +1948,7 @@
          * @method add
          */
         add: function(targets) {
-            var res = this.getTargets().concat(this._modifyTargets(targets));
+            var res = this.getTargets().concat(targets);
             this.setTargets(res);
         },
 
@@ -2000,7 +1959,7 @@
             var me = this,
                 targets = this.getTargets(),
                 res = [];
-            Global.each(targets, function(index, target){
+            Global.Array.each(targets, function(index, target){
                 if(target.name !== name){
                     res.push(target);
                 }
@@ -2009,8 +1968,6 @@
         }
     });
 })();
-
-
 
 (function(){
     'use strict';

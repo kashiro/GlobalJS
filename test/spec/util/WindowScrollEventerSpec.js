@@ -22,38 +22,55 @@ describe('Test for util/WindowScrollEventer.js', function () {
         expect(WindowScrollEventer.prototype.remove).to.be.a('function');
     });
 
-    describe('#_getFn', function () {
-        it('return show function if you set "show" type', function(){
-            inst = new WindowScrollEventer({targets: {name: 'test', $elm: $elm, type: 'show'}});
-            var res = inst._getFn('show') === inst.getFn().show;
-            expect(res).to.be.ok();
-        });
-        it('return hide function if you set "hid" type', function(){
-            inst = new WindowScrollEventer({targets: {name: 'test', $elm: $elm, type: 'hide'}});
-            var res = inst._getFn('hide') === inst.getFn().hide;
-            expect(res).to.be.ok();
+    describe('#remove', function() {
+        it('remove object in target array if target object has same name object you passed', function() {
+            var test = [
+                    {
+                        $elm: null,
+                        name: 'test1',
+                    },
+                    {
+                        $elm: null,
+                        name: 'test2',
+                    }
+                ],
+                inst = new WindowScrollEventer();
+
+            inst.setTargets(test);
+            inst.remove('test1');
+            var targets = inst.getTargets();
+            expect(targets).to.have.length(1);
+            expect(targets[0].name).to.equal('test2');
         });
     });
 
-    describe('#_modifyTargets', function() {
-        it('if you set nonArray target are wrap Array', function () {
-            inst = new WindowScrollEventer({targets: {name: 'test', $elm: $elm, type: 'show'}});
-            expect(inst.getTargets()).to.be.an('array');
-        });
-        it('if you set object that contain type property #_getFn should be called', function() {
-            inst = new WindowScrollEventer({targets: {name: 'test', $elm: $elm, type: 'show'}});
-            var spy = sinon.spy(inst, '_getFn');
+    describe('#add', function() {
+        it('add object to tagets array', function() {
+            var inst = new WindowScrollEventer();
+            inst.setTargets([{$elm: null, name: 'test1'}]);
 
-            inst._modifyTargets({name: 'test', $elm: $elm, type: 'show'});
-            expect(spy.called).to.be.ok();
+            inst.add({$elm: null, name: 'test2'});
+            expect(inst.getTargets()).to.have.length(2);
         });
-        it('if you set object that dose not contain type property #_getFn should not be called', function() {
-            inst = new WindowScrollEventer({targets: {name: 'test', $elm: $elm}});
-            var spy = sinon.spy(inst, '_getFn');
-
-            inst._modifyTargets({name: 'test', $elm: $elm});
-            expect(spy.called).to.not.be.ok();
-        });
- 
     });
+
+    describe('isShown', function() {
+        it('return true if the element is showon', function() {
+            var inst = new WindowScrollEventer();
+            $(document.documentElement).css('height', '300');
+            var res = inst.isShown(10, 90);
+            expect(res).to.be.ok();
+        });
+        it('return false if the element is showon', function() {
+            var inst = new WindowScrollEventer();
+            $(document.documentElement).css('height', '300');
+            var res = inst.isShown(10, -10);
+            expect(res).to.not.be.ok();
+            res = inst.isShown(301,10);
+            expect(res).to.not.be.ok();
+            res = inst.isShown(301,-10);
+            expect(res).to.not.be.ok();
+        });
+    });
+
 });
