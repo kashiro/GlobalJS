@@ -56,19 +56,19 @@ describe('Test for util/WindowScrollEventer.js', function () {
 
     describe('isShown', function() {
         it('return true if the element is showon', function() {
-            var inst = new WindowScrollEventer();
-            $(document.documentElement).css('height', '300');
-            var res = inst.isShown(10, 90);
+            var inst = new WindowScrollEventer(),
+                height = document.documentElement.clientHeight;
+            var res = inst.isShown(height-10, 10);
             expect(res).to.be.ok();
         });
         it('return false if the element is showon', function() {
-            var inst = new WindowScrollEventer();
-            $(document.documentElement).css('height', '300');
-            var res = inst.isShown(10, -10);
+            var inst = new WindowScrollEventer(),
+                height = document.documentElement.clientHeight,
+                res = inst.isShown(height+10, 10);
             expect(res).to.not.be.ok();
-            res = inst.isShown(301,10);
+            res = inst.isShown(height-10, -10);
             expect(res).to.not.be.ok();
-            res = inst.isShown(301,-10);
+            res = inst.isShown(height+10, -10);
             expect(res).to.not.be.ok();
         });
     });
