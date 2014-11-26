@@ -13,9 +13,10 @@ mixin ogp(data)
         - locale = data.locale
 
     meta(property='og:locale', content='#{locale}')
-    meta(property='og:title', content='#{data.title}')
+    meta(property='og:title', itemprop='name', content='#{data.title}')
     meta(property='og:type', content='#{data.type}')
     meta(property='og:url', content='#{data.url}')
+    link(itemprop='image', href='#{data.url}')
     meta(property='og:image', content='#{data.image}')
     meta(property='og:site_name', content='#{data.siteName}')
-    meta(property='og:description', content='#{data.desc}')
+    meta(property='og:description', itemprop='description', content='#{data.desc}')

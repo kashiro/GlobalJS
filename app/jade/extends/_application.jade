@@ -1,8 +1,10 @@
 include /mixin/_cComment
 doctype html
 html(lang='ja', prefix="og: http://ogp.me/ns# fb: http://www.facebook.com/2008/fbml")
-    head
+    //- itemtype http://schema.org/docs/full.html
+    head(itemscope, itemtype="http://schema.org/WebPage")
         meta(charset='utf-8')
+        meta(name="format-detection", content="telephone=no")
         +ie
             meta(http-equiv='X-UA-Compatible', content='IE=edge')
         block title
