@@ -1,3 +1,16 @@
 .g-button{
     cursor: pointer;
+    user-select: none;
+    
+    /* Firefox Specific CSS to remove button differences and focus ring */
+    /* http://googlesamples.github.io/web-fundamentals/samples/input/touch/states-example.html */
+    background-image: none;
+    &::-moz-focus-inner{
+        border: 0;
+    }
+    /* The outline parameter surpresses the border color / outline when focused */
+    /* http://googlesamples.github.io/web-fundamentals/samples/input/touch/states-example.html */
+    &:focus{
+        outline: 0;
+    }
 }
