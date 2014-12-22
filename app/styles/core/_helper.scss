@@ -13,13 +13,8 @@
     }
 }
 %ir {
-    background-color: transparent;
-    border: 0;
+    # need to set width and height
+    text-indent: 100%;
+    white-space: nowrap;
     overflow: hidden;
-    &:before {
-        content: "";
-        display: block;
-        width: 0;
-        height: 150%;
-    }
 }
