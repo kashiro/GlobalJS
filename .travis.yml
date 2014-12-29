@@ -10,3 +10,4 @@ before_script:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   - npm install -g grunt-cli
+  - ls -l /home/travis/build/kashiro/GlobalJS/app/scripts/util/*
