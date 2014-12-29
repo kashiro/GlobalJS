@@ -30,9 +30,10 @@
     "karma-mocha": "*",
     "grunt-jsduck": "~1.0.0",
     "jshint-stylish": "~0.1.5",
-    "grunt-contrib-jade": "~0.10.0"
+    "grunt-contrib-jade": "~0.10.0",
+    "phantomjs": "^1.9.11"
   },
   "engines": {
-    "node": ">=0.11.0"
+    "node": "0.10.28"
   }
 }
