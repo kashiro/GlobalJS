@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function(){
+    &#39;use strict&#39;;
+
+<span id='Global-app-HistoryRouter'>    /**
+</span>     * @class Global.app.HistoryRouter
+     * @extend Global.app.Router
+     */
+    Global.define(&#39;Global.app.HistoryRouter&#39;,{
+
+        extend: Global.app.Router,
+
+        historyCtr: null,
+
+        useHash: false,
+
+        defaultPathName: &#39;/&#39;,
+
+        init: function(config) {
+            var me = this;
+            this._super(config);
+            this.setHistoryCtr(new Global.app.History({
+                useHash: me.getUseHash(),
+                defaultPathName: me.getDefaultPathName()
+            }));
+            this._bind();
+        },
+
+        _bind: function() {
+            this.getHistoryCtr().addEventListener(&#39;change&#39;, Global.Functions.bind(this._onChangeState, this));
+        },
+
+        _onChangeState: function() {
+            var isChangeEvent = true;
+            this.start(isChangeEvent);
+        },
+
+<span id='Global-app-HistoryRouter-method-start'>        /**
+</span>         * @override
+         * @param {Boolean} isChangeEvent
+         */
+        start: function(isChangeEvent) {
+            var pathName = this.getHistoryCtr().getNormalizePath(),
+                res = this._start(pathName, isChangeEvent);
+            if(!res){
+                this._startDefault();
+            }
+        },
+
+        _startDefault: function() {
+            var pathName = this.getDefaultPathName();
+            this.changePage(pathName);
+        },
+
+        _start: function(pathName, isChangeEvent) {
+            var instance = this._getControllerInstance(pathName);
+            if(instance){
+                instance.restart();
+            }else{
+                instance = this._makeController(pathName);
+            }
+            if(!isChangeEvent &amp;&amp; instance){
+                this.getHistoryCtr().pushState(pathName);
+            }
+            return !!instance;
+        },
+
+        _getControllerInstance: function(path){
+            return this.controllers[path];
+        },
+
+        _makeController: function(pathName) {
+            var routing  = this.getRouting(),
+                Klass    = this._getController(pathName, routing),
+                instance = Klass ? new Klass({pathKey: pathName}) : undefined;
+            this.controllers[pathName] = instance;
+            return instance;
+        },
+
+        changePage: function(pathName) {
+            this._start(pathName);
+        }
+    });
+})();
+</pre>
+</body>
+</html>

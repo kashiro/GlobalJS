@@ -26,9 +26,11 @@
      */
     Global.define(&#39;Global.app.History&#39;,{
 
-        singleton: true,
-
         extend: Global.core.ObservableClass,
+
+        defaultPathName: &#39;&#39;,
+
+        changeHash: false,
 
         eventName: {
             change: &#39;change&#39;
@@ -45,14 +47,13 @@
         data: null,
 
 <span id='Global-app-History-cfg-hashextention'>        /**
-</span>         * @cfg {String} hashextention /# + ${hashextention} 
+</span>         * @cfg {String} hashextention /# + ${hashextention}
          */
         hashExtention: &#39;!/&#39;,
 
 <span id='Global-app-History-method-state'>        /**
 </span>         * @method state
          * get state data
-         * @public
          */
         state: function() {
             return this.getData();
@@ -61,7 +62,6 @@
 <span id='Global-app-History-method-length'>        /**
 </span>         * @method length
          * get state length
-         * @public
          */
         length: function() {
             return this.isSupported ? history.length : null;
@@ -72,30 +72,37 @@
          */
         init: function(config) {
             this._super(config);
+            this._setUseHash(this.useHash);
             this._bind();
+        },
+
+        _setUseHash: function(useHash) {
+            if(useHash){
+                this.isSupported = false;
+            }
         },
 
 <span id='Global-app-History-method-pushState'>        /**
 </span>         * @method pushState
          * change url
          * if History API dose not supported use change hash flagment
-         * @public
          */
         pushState: function(path, state, title) {
-            var he = this.getHashExtention();
+            var _path,
+                dpn = this.getDefaultPathName();
             this.setData(state);
             if(this.isSupported){
-                history.pushState(state, title, path);
-                this._onPopState();
+                _path = dpn + path;
+                history.pushState(state, title, _path);
             }else{
-                location.hash = he + path;
+                this.setChangeHash(true);
+                location.hash = this._getHashByPathName(path);
             }
         },
 
 <span id='Global-app-History-method-forward'>        /**
 </span>         * @method forward
          * same as history.forward()
-         * @public
          */
         forward: function() {
             history.forward();
@@ -104,7 +111,6 @@
 <span id='Global-app-History-method-back'>        /**
 </span>         * @method back
          * same as history.back()
-         * @public
          */
         back: function() {
             history.back();
@@ -113,10 +119,69 @@
 <span id='Global-app-History-method-go'>        /**
 </span>         * @method go
          * same as history.go()
-         * @public
          */
         go: function() {
-            history.back();
+            history.go();
+        },
+
+<span id='Global-app-History-method-getNormalizePath'>        /**
+</span>         * @method getNormalizePath
+         * if your browser support history api return pathname from location.pathname
+         * if your browser dose not supported history api return pathname from location.hash
+         * the return path have slash at first child and dose not have slash at last child.
+         */
+        getNormalizePath: function() {
+            var res;
+            if(this.isSupported){
+                res = this.getPathName();
+            }else{
+                res = this.getHash();
+            }
+            return res;
+        },
+
+<span id='Global-app-History-method-getPathName'>        /**
+</span>         * @method getPathName
+         * @return pathname which has slash at first child and excluding default pathname
+         */
+        getPathName: function() {
+            var pathName = location.pathname;
+            pathName = pathName.split(this.getDefaultPathName())[1];
+            pathName = this._addSlashAtFirst(pathName);
+            return this._getNoLastSlashPath(pathName);
+        },
+
+<span id='Global-app-History-method-getHash'>        /**
+</span>         * @method getHash
+         * @return pathname which has slash at first child and excluding hash extention (e.g. !#/)
+         */
+        getHash: function() {
+            var hash = location.hash,
+                path = this._changeHashToPathName(hash);
+            return this._getNoLastSlashPath(path);
+        },
+
+        _changeHashToPathName: function(hash) {
+            var prefix = &#39;#&#39; + this.getHashExtention(),
+                pathName;
+            if(!hash){
+                pathName = &#39;/&#39;;
+            }else{
+                pathName = hash.split(prefix)[1];
+                pathName = this._addSlashAtFirst(pathName);
+            }
+            return pathName;
+        },
+
+        _getHashByPathName: function(path) {
+            var he = this.getHashExtention(),
+                res;
+            if(path === &#39;/&#39;){
+                res = he;
+            }else{
+                res = he + (this._isFirstSlash(path) ? path.substring(1) : path);
+            }
+            return res;
         },
 
 <span id='Global-app-History-method-_bind'>        /**
@@ -134,8 +199,14 @@
 </span>         * @private
          */
         _bindHashChange: function() {
-            var key = window.addEventListener ? &#39;addEventListener&#39; : &#39;attachEvent&#39;;
-            window[key](&#39;hashchange&#39;, Global.Functions.bind(this._onPopState, this));
+            var me = this,
+                key = window.addEventListener ? &#39;addEventListener&#39; : &#39;attachEvent&#39;;
+            window[key](&#39;hashchange&#39;, function(e) {
+                if(!me.getChangeHash()){
+                    me._onPopState(e);
+                }
+                me.setChangeHash(false);
+            });
         },
 
 <span id='Global-app-History-method-_onPopState'>        /**
@@ -147,6 +218,32 @@
                 raw : e
             };
             this.dispatchEvent(this.getEventName().change, data);
+        },
+        _isFirstSlash: function(str) {
+            var reg = /^\//;
+            return reg.test(str);
+        },
+
+        _addSlashAtFirst: function(str) {
+            var res;
+            if(Global.isUndefined(str)){
+                res = undefined;
+            }else{
+                if(!this._isFirstSlash(str)){
+                    str  = &#39;/&#39; + str;
+                }
+                res = str;
+            }
+            return str;
+        },
+
+        _getNoLastSlashPath: function(path){
+            var reg = /\/$/;
+            if(path === &#39;/&#39;){
+                return path;
+            }else{
+                return reg.test(path) ? path.slice(0, -1) : path;
+            }
         }
 
     });

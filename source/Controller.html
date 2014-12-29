@@ -25,7 +25,14 @@
      */
     Global.define(&#39;Global.app.Controller&#39;,{
 
-        extend: Global.core.ManipulateDomClass
+        extend: Global.core.ManipulateDomClass,
+
+<span id='Global-app-Controller-method-restart'>        /**
+</span>         * @method restart
+         * if you use HistoryRouter this method is called in second time.
+         */
+        restart: function() {
+        }
 
     });
 })();

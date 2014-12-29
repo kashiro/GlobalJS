@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">(function(){
+    &#39;use strict&#39;;
+
+<span id='Global-util-CountDown'>    /**
+</span>     * @class Global.util.CountDown
+     * @extends Global.core.ObservableClass
+     * @example
+     *
+     *     var cd = new Global.util.CountDown({
+     *         countDown: 5000
+     *     }});
+     *
+     *     cd.addEventListener(&#39;timeupdate&#39;, function() {
+     *         // do something
+     *     });
+     *     cd.addEventListener(&#39;end&#39;, function() {
+     *         // do something
+     *     });
+     *
+     *     cd.execute();
+     */
+    Global.define(&#39;Global.util.CountDown&#39;, {
+
+        extend: Global.core.ObservableClass,
+
+        eventName: {
+<span id='Global-util-CountDown-event-timeupdate'>            /**
+</span>             * @event timeupdate
+             * fired when time is updated
+             * @param {Global.util.CountDown} target this class.
+             * @param {String} eventName this event name.
+             * @param {Object} data data of this event.
+             */
+            TIMEUPDATE: &#39;timeupdate&#39;,
+<span id='Global-util-CountDown-event-end'>            /**
+</span>             * @event end
+             * Fired when this countdown is ended
+             * @param {Global.util.CountDown} target this class.
+             * @param {String} eventName this event name.
+             */
+            END: &#39;end&#39;
+        },
+
+<span id='Global-util-CountDown-cfg-countDown'>        /**
+</span>         * @cfg {Number} countDown count down time (ms)
+         */
+        countDown  : 0,
+
+<span id='Global-util-CountDown-cfg-interval'>        /**
+</span>         * @cfg {Number} interval interval of count down (ms)
+         */
+        interval: 100,
+
+<span id='Global-util-CountDown-method-execute'>        /**
+</span>         * @method execute
+         * start count down
+         */
+        execute: function() {
+            var me = this,
+                count = 0,
+                isEnd = false,
+                interval = this.getInterval(),
+                eventName = this.getEventName();
+
+            window.setTimeout(function(){
+                (function loop() {
+                    count += interval;
+                    isEnd = me._isEnd(count);
+                    if(isEnd){
+                        me.dispatchEvent(eventName.END, count);
+                    }else{
+                        me.dispatchEvent(eventName.TIMEUPDATE, count);
+                        window.setTimeout(loop, interval);
+                    }
+                }());
+            }, interval);
+        },
+
+        _isEnd: function(total) {
+            var res = false;
+            if(total &gt;= this.getCountDown()){
+                res = true;
+            }
+            return res;
+        }
+
+    });
+
+})();
+</pre>
+</body>
+</html>
